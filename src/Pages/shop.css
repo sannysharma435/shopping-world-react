@@ -1,0 +1,34 @@
+.shop-page{
+    width:90%;
+    margin:50px auto;
+}
+
+.shop-page h1{
+    text-align:center;
+    font-size:40px;
+    color:#2563eb;
+    margin-bottom:40px;
+}
+
+.shop-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+    align-items:start;
+}
+
+@media(max-width:768px){
+
+    .shop-page{
+        width:94%;
+        margin:30px auto;
+    }
+
+    .shop-page h1{
+        font-size:30px;
+    }
+
+    .shop-grid{
+        grid-template-columns:1fr;
+    }
+}

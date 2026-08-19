@@ -1,0 +1,81 @@
+.profile-container {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f7fb;
+    padding: 40px 20px;
+}
+
+.profile-box {
+    width: 450px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    text-align: center;
+}
+
+.profile-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    font-size: 42px;
+}
+
+.profile-box h1 {
+    margin-bottom: 30px;
+    color: #222;
+}
+
+.profile-info {
+    text-align: left;
+}
+
+.profile-info div {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-info span {
+    display: block;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.profile-info strong {
+    color: #222;
+    font-size: 17px;
+}
+
+.profile-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.profile-buttons button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.edit-profile {
+    background: #2563eb;
+    color: white;
+}
+
+.logout-btn {
+    background: #ef4444;
+    color: white;
+}
