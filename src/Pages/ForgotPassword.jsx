@@ -57,7 +57,7 @@ function ForgotPassword() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/api/reset-password",
+        "https://shopping-world-react-production-3fd5.up.railway.app/api/reset-password",
         {
           method: "POST",
           headers: {
