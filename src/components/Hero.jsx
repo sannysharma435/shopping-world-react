@@ -27,8 +27,8 @@ function Hero() {
       <div className="hero-right">
 
         <img
-          src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=900"
-          alt="Shopping"
+          src="/hero-shopping.png"
+          alt="Shopping World"
         />
 
       </div>
