@@ -5,10 +5,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Products from "./components/Products";
+import Footer from "./components/Footer";
+
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import ProductDetails from "./Pages/ProductDetails";
 import Shop from "./Pages/Shop";
+import Categories from "./Pages/Categories";
+import Contact from "./Pages/Contact";
 import Profile from "./Pages/Profile";
 import ForgotPassword from "./Pages/ForgotPassword";
 
@@ -23,6 +27,7 @@ function Home({ search, setSearch }) {
 
 function App() {
   const [search, setSearch] = useState("");
+
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("shoppingWorldUser");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -30,6 +35,7 @@ function App() {
 
   return (
     <BrowserRouter>
+
       <Navbar
         search={search}
         setSearch={setSearch}
@@ -37,6 +43,7 @@ function App() {
       />
 
       <Routes>
+
         <Route
           path="/"
           element={
@@ -58,6 +65,16 @@ function App() {
         />
 
         <Route
+          path="/categories"
+          element={<Categories />}
+        />
+
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
+
+        <Route
           path="/login"
           element={<Login setUser={setUser} />}
         />
@@ -74,7 +91,6 @@ function App() {
               user={user}
               setUser={setUser}
             />
-            
           }
         />
 
@@ -82,7 +98,11 @@ function App() {
           path="/forgot-password"
           element={<ForgotPassword />}
         />
+
       </Routes>
+
+      <Footer />
+
     </BrowserRouter>
   );
 }

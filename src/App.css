@@ -1,25 +1,35 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-  font-family:Arial, Helvetica, sans-serif;
-  background:#f5f5f5;
+html {
+    scroll-behavior: smooth;
 }
 
-div{
-  text-align:center;
-  margin-top:100px;
+body {
+    background: #050505;
+    color: #f8fafc;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-h1{
-  color:#2563eb;
-  font-size:50px;
+#root {
+    min-height: 100vh;
+    background: #050505;
 }
 
-p{
-  margin-top:15px;
-  font-size:22px;
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    transition: all 0.25s ease;
+}
+
+::selection {
+    background: #2563eb;
+    color: #ffffff;
 }

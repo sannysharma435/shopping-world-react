@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./ProductDetails.css";
+import productsData from "../data/products";
 
 function ProductDetails() {
   const { name } = useParams();
@@ -9,22 +10,17 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/api/products")
-      .then((response) => response.json())
-      .then((data) => {
-        const foundProduct = data.find(
-          (item) =>
-            item.name.toLowerCase() ===
-            decodeURIComponent(name).toLowerCase()
-        );
+    setLoading(true);
 
-        setProduct(foundProduct);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+    const productName = decodeURIComponent(name || "");
+
+    const foundProduct = productsData.find(
+      (item) =>
+        item.name.toLowerCase() === productName.toLowerCase()
+    );
+
+    setProduct(foundProduct || null);
+    setLoading(false);
   }, [name]);
 
   if (loading) {
@@ -40,8 +36,8 @@ function ProductDetails() {
       <div className="product-not-found">
         <h1>Product Not Found 😔</h1>
 
-        <Link to="/">
-          <button>Go Back Home</button>
+        <Link to="/shop">
+          <button>Go Back to Shop</button>
         </Link>
       </div>
     );
@@ -50,17 +46,23 @@ function ProductDetails() {
   return (
     <div className="product-details">
 
+      {/* Product Image */}
       <div className="details-image">
-        <span className="details-discount">
-          {product.discount}
-        </span>
+
+        {product.discount && (
+          <span className="details-discount">
+            {product.discount}
+          </span>
+        )}
 
         <img
           src={product.image}
           alt={product.name}
         />
+
       </div>
 
+      {/* Product Information */}
       <div className="details-info">
 
         <p className="details-category">
@@ -71,58 +73,85 @@ function ProductDetails() {
 
         <div className="details-rating">
           ⭐ {product.rating}
-          <span> ({product.reviews} Reviews)</span>
+
+          {product.reviews && (
+            <span>
+              {" "}
+              ({product.reviews} Reviews)
+            </span>
+          )}
         </div>
 
         <h2 className="details-price">
-          ₹{product.price.toLocaleString("en-IN")}
+          ₹
+          {typeof product.price === "number"
+            ? product.price.toLocaleString("en-IN")
+            : product.price}
         </h2>
 
-        <p className="details-delivery">
-          🚚 {product.delivery}
-        </p>
+        {product.delivery && (
+          <p className="details-delivery">
+            🚚 {product.delivery}
+          </p>
+        )}
 
         <hr />
 
         <h3>Product Description</h3>
 
         <p className="details-description">
-          {product.description}
+          {product.description ||
+            "This is a high-quality product available at Shopping World."}
         </p>
 
+        {/* Product Specifications */}
         <div className="product-specs">
 
-          <div>
-            <strong>Brand</strong>
-            <span>{product.brand}</span>
-          </div>
+          {product.brand && (
+            <div>
+              <strong>Brand</strong>
+              <span>{product.brand}</span>
+            </div>
+          )}
 
-          <div>
-            <strong>Color</strong>
-            <span>{product.color}</span>
-          </div>
+          {product.color && (
+            <div>
+              <strong>Color</strong>
+              <span>{product.color}</span>
+            </div>
+          )}
 
           <div>
             <strong>Category</strong>
             <span>{product.category}</span>
           </div>
 
-          <div>
-            <strong>Availability</strong>
-            <span className="stock">
-              ● {product.availability}
-            </span>
-          </div>
+          {product.availability && (
+            <div>
+              <strong>Availability</strong>
+
+              <span className="stock">
+                ● {product.availability}
+              </span>
+            </div>
+          )}
 
         </div>
 
+        {/* Buttons */}
         <div className="details-buttons">
 
-          <button className="details-cart">
+          <button
+            className="details-cart"
+            onClick={() => alert("Product added to cart 🛒")}
+          >
             🛒 Add to Cart
           </button>
 
-          <button className="details-buy">
+          <button
+            className="details-buy"
+            onClick={() => alert("Buy Now feature coming soon ⚡")}
+          >
             ⚡ Buy Now
           </button>
 

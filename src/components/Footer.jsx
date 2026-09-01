@@ -7,7 +7,6 @@ function Footer() {
 
       <div className="footer-container">
 
-        {/* Brand */}
         <div className="footer-section footer-brand">
           <h2>
             Shopping <span>World</span>
@@ -18,7 +17,6 @@ function Footer() {
             Shop easily, safely and comfortably.
           </p>
 
-          {/* Social Media */}
           <div className="social-icons">
 
             <a href="#" aria-label="Facebook">
@@ -40,8 +38,6 @@ function Footer() {
           </div>
         </div>
 
-
-        {/* Quick Links */}
         <div className="footer-section">
           <h3>Quick Links</h3>
 
@@ -64,8 +60,6 @@ function Footer() {
           </ul>
         </div>
 
-
-        {/* Customer Service */}
         <div className="footer-section">
           <h3>Customer Service</h3>
 
@@ -77,8 +71,6 @@ function Footer() {
           </ul>
         </div>
 
-
-        {/* Contact */}
         <div className="footer-section">
           <h3>Contact Us</h3>
 
@@ -89,8 +81,6 @@ function Footer() {
 
       </div>
 
-
-      {/* Bottom Footer */}
       <div className="footer-bottom">
 
         <p>
