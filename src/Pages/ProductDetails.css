@@ -3,7 +3,7 @@
     max-width: 1150px;
     margin: 70px auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 55px;
     background: #101010;
     padding: 35px;
@@ -14,6 +14,8 @@
 
 .details-image {
     position: relative;
+    width: 100%;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,6 +29,7 @@
     width: 100%;
     height: 500px;
     object-fit: cover;
+    display: block;
     transition: transform 0.5s ease;
 }
 
@@ -49,6 +52,7 @@
 }
 
 .details-info {
+    min-width: 0;
     padding: 10px 5px;
 }
 
@@ -67,6 +71,7 @@
     font-weight: 800;
     margin-bottom: 18px;
     color: #f8fafc;
+    overflow-wrap: anywhere;
 }
 
 .details-rating {
@@ -92,6 +97,7 @@
 .details-delivery {
     color: #9ca3af;
     font-size: 16px;
+    line-height: 1.5;
     margin-bottom: 25px;
 }
 
@@ -116,12 +122,13 @@
 
 .product-specs {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 13px;
     margin-bottom: 30px;
 }
 
 .product-specs div {
+    min-width: 0;
     background: #181818;
     padding: 15px;
     border-radius: 10px;
@@ -140,6 +147,7 @@
     color: #e5e7eb;
     font-size: 14px;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .product-specs .stock {
@@ -153,6 +161,7 @@
 
 .details-buttons button {
     flex: 1;
+    min-width: 0;
     padding: 15px;
     border: none;
     border-radius: 11px;
@@ -183,7 +192,13 @@
     box-shadow: 0 12px 28px rgba(245, 158, 11, 0.3);
 }
 
+
+/* =========================
+   PRODUCT NOT FOUND
+========================= */
+
 .product-not-found {
+    width: 100%;
     min-height: 500px;
     display: flex;
     flex-direction: column;
@@ -215,28 +230,91 @@
     transform: translateY(-2px);
 }
 
+
+/* =========================
+   LAPTOP
+========================= */
+
+@media (max-width: 1100px) {
+
+    .product-details {
+        width: 92%;
+        gap: 35px;
+        padding: 28px;
+    }
+
+    .details-image img {
+        height: 440px;
+    }
+
+    .details-info h1 {
+        font-size: 36px;
+    }
+
+    .details-price {
+        font-size: 32px;
+    }
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
 @media (max-width: 900px) {
+
     .product-details {
         width: 92%;
         grid-template-columns: 1fr;
         gap: 30px;
+        margin: 55px auto;
+    }
+
+    .details-image img {
+        height: 450px;
+    }
+
+    .details-info {
+        padding: 5px;
+    }
+
+    .details-info h1 {
+        font-size: 36px;
     }
 }
 
+
+/* =========================
+   SMALL TABLET
+========================= */
+
 @media (max-width: 768px) {
+
     .product-details {
         width: 94%;
         margin: 40px auto;
         padding: 20px;
-        border-radius: 18px;
+        border-radius: 19px;
+        gap: 25px;
+    }
+
+    .details-image {
+        border-radius: 15px;
     }
 
     .details-image img {
-        height: 350px;
+        height: 380px;
+    }
+
+    .details-discount {
+        top: 13px;
+        left: 13px;
+        padding: 7px 13px;
+        font-size: 12px;
     }
 
     .details-info h1 {
-        font-size: 30px;
+        font-size: 31px;
     }
 
     .details-price {
@@ -244,24 +322,143 @@
     }
 
     .product-specs {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .details-buttons {
-        flex-direction: column;
+        gap: 12px;
     }
 }
 
-@media (max-width: 480px) {
-    .details-image img {
-        height: 280px;
-    }
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
 
     .product-details {
+        width: 92%;
+        margin: 30px auto;
         padding: 15px;
+        border-radius: 17px;
+        gap: 22px;
+    }
+
+    .details-image {
+        border-radius: 13px;
+    }
+
+    .details-image img {
+        height: 300px;
+    }
+
+    .details-info {
+        padding: 2px;
+    }
+
+    .details-category {
+        font-size: 12px;
+        letter-spacing: 0.8px;
     }
 
     .details-info h1 {
         font-size: 27px;
+        line-height: 1.2;
+    }
+
+    .details-rating {
+        font-size: 17px;
+    }
+
+    .details-rating span {
+        font-size: 13px;
+    }
+
+    .details-price {
+        font-size: 28px;
+    }
+
+    .details-delivery {
+        font-size: 14px;
+    }
+
+    .details-info h3 {
+        font-size: 19px;
+    }
+
+    .details-description {
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .product-specs {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .product-specs div {
+        padding: 13px;
+    }
+
+    .details-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .details-buttons button {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    .product-details {
+        width: 94%;
+        margin: 25px auto;
+        padding: 12px;
+        gap: 18px;
+    }
+
+    .details-image img {
+        height: 250px;
+    }
+
+    .details-discount {
+        top: 10px;
+        left: 10px;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .details-info h1 {
+        font-size: 24px;
+    }
+
+    .details-rating {
+        font-size: 16px;
+    }
+
+    .details-price {
+        font-size: 25px;
+    }
+
+    .details-description {
+        font-size: 13px;
+    }
+
+    .product-specs div {
+        padding: 12px;
+    }
+
+    .details-buttons button {
+        font-size: 14px;
+        padding: 13px;
     }
 }

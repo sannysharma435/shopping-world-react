@@ -1,3 +1,7 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,17 +10,33 @@
 
 html {
     scroll-behavior: smooth;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
+    width: 100%;
+    min-width: 0;
     background: #050505;
     color: #f8fafc;
     font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
 }
 
 #root {
+    width: 100%;
     min-height: 100vh;
     background: #050505;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   COMMON ELEMENTS
+========================= */
+
+img {
+    max-width: 100%;
 }
 
 button,
@@ -29,7 +49,84 @@ button {
     transition: all 0.25s ease;
 }
 
+input,
+textarea {
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+}
+
 ::selection {
     background: #2563eb;
     color: #ffffff;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #080808;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #292929;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3b3b3b;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    body {
+        font-size: 15px;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    button {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    input,
+    textarea,
+    button {
+        max-width: 100%;
+    }
+}
+
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    body {
+        font-size: 13px;
+    }
 }

@@ -1,4 +1,6 @@
 .product-card {
+    width: 100%;
+    max-width: 360px;
     background: #111111;
     border-radius: 20px;
     overflow: hidden;
@@ -18,6 +20,7 @@
 
 .image-box {
     position: relative;
+    width: 100%;
     height: 235px;
     overflow: hidden;
     background: #181818;
@@ -78,6 +81,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
 }
 
 .product-info h3 {
@@ -85,6 +89,11 @@
     font-weight: 700;
     color: #f8fafc;
     margin-bottom: 9px;
+
+    /* Long product names ko control karega */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .rating {
@@ -105,6 +114,7 @@
     color: #9ca3af;
     margin-bottom: 17px;
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .buttons {
@@ -116,6 +126,7 @@
 .cart-btn,
 .buy-btn {
     flex: 1;
+    min-width: 0;
     padding: 11px 8px;
     border: none;
     border-radius: 10px;
@@ -145,16 +156,135 @@
     transform: translateY(-2px);
 }
 
-@media (max-width: 600px) {
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1024px) {
+
+    .product-card {
+        max-width: 340px;
+    }
+
     .image-box {
-        height: 210px;
+        height: 220px;
+    }
+
+    .product-info {
+        padding: 17px;
+    }
+
+    .product-info h3 {
+        font-size: 18px;
+    }
+
+    .product-info h2 {
+        font-size: 25px;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .product-card {
+        width: 100%;
+        max-width: 420px;
+        border-radius: 17px;
+    }
+
+    .image-box {
+        height: 220px;
+    }
+
+    .discount {
+        top: 11px;
+        left: 11px;
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .heart {
+        top: 11px;
+        right: 11px;
+        width: 37px;
+        height: 37px;
+        font-size: 17px;
     }
 
     .product-info {
         padding: 16px;
     }
 
+    .product-info h3 {
+        font-size: 18px;
+    }
+
+    .product-info h2 {
+        font-size: 25px;
+    }
+
+    .delivery {
+        font-size: 13px;
+    }
+
     .buttons {
-        flex-direction: column;
+        flex-direction: row;
+    }
+
+    .cart-btn,
+    .buy-btn {
+        padding: 12px 6px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    .product-card {
+        border-radius: 15px;
+    }
+
+    .image-box {
+        height: 190px;
+    }
+
+    .product-info {
+        padding: 14px;
+    }
+
+    .product-info h3 {
+        font-size: 17px;
+    }
+
+    .product-info h2 {
+        font-size: 23px;
+    }
+
+    .rating {
+        font-size: 13px;
+    }
+
+    .delivery {
+        font-size: 12px;
+    }
+
+    .buttons {
+        gap: 7px;
+    }
+
+    .cart-btn,
+    .buy-btn {
+        padding: 11px 5px;
+        font-size: 12px;
     }
 }

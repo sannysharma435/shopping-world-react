@@ -1,17 +1,27 @@
 .profile-container {
+    width: 100%;
     min-height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background:
-        radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.1), transparent 30%),
-        radial-gradient(circle at 80% 70%, rgba(245, 158, 11, 0.05), transparent 30%),
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(37, 99, 235, 0.1),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(245, 158, 11, 0.05),
+            transparent 30%
+        ),
         #050505;
     padding: 50px 20px;
 }
 
 .profile-box {
-    width: 450px;
+    width: 100%;
+    max-width: 450px;
     background: #111111;
     padding: 42px;
     border-radius: 22px;
@@ -40,9 +50,12 @@
     color: #f8fafc;
     font-size: 30px;
     font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 
 .profile-info {
+    width: 100%;
     text-align: left;
 }
 
@@ -66,6 +79,7 @@
     color: #e5e7eb;
     font-size: 16px;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .profile-buttons {
@@ -76,6 +90,7 @@
 
 .profile-buttons button {
     flex: 1;
+    min-width: 0;
     padding: 13px;
     border: none;
     border-radius: 10px;
@@ -108,22 +123,119 @@
     transform: translateY(-2px);
 }
 
-@media (max-width: 520px) {
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+
     .profile-container {
-        padding: 35px 18px;
+        min-height: 75vh;
+        padding: 45px 25px;
+    }
+
+    .profile-box {
+        max-width: 440px;
+        padding: 38px 32px;
+    }
+
+    .profile-icon {
+        width: 90px;
+        height: 90px;
+        font-size: 40px;
+    }
+
+    .profile-box h1 {
+        font-size: 28px;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .profile-container {
+        min-height: 70vh;
+        padding: 35px 16px;
     }
 
     .profile-box {
         width: 100%;
-        padding: 30px 22px;
-        border-radius: 18px;
+        padding: 32px 20px;
+        border-radius: 19px;
+    }
+
+    .profile-icon {
+        width: 82px;
+        height: 82px;
+        font-size: 36px;
+        margin-bottom: 17px;
     }
 
     .profile-box h1 {
-        font-size: 26px;
+        font-size: 25px;
+        margin-bottom: 25px;
+    }
+
+    .profile-info div {
+        padding: 14px 3px;
+    }
+
+    .profile-info span {
+        font-size: 12px;
+    }
+
+    .profile-info strong {
+        font-size: 15px;
     }
 
     .profile-buttons {
         flex-direction: column;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .profile-buttons button {
+        width: 100%;
+        padding: 13px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    .profile-container {
+        padding: 28px 12px;
+    }
+
+    .profile-box {
+        padding: 28px 16px;
+        border-radius: 17px;
+    }
+
+    .profile-icon {
+        width: 75px;
+        height: 75px;
+        font-size: 32px;
+    }
+
+    .profile-box h1 {
+        font-size: 23px;
+    }
+
+    .profile-info strong {
+        font-size: 14px;
+    }
+
+    .profile-buttons button {
+        font-size: 14px;
     }
 }

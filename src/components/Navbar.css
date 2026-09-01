@@ -5,24 +5,26 @@
 }
 
 .navbar {
+    width: 100%;
+    min-height: 72px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 55px;
-    background: #050505;
-    border-bottom: 1px solid #1f1f1f;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    gap: 25px;
+    padding: 15px 5%;
+    background: #080808;
+    border-bottom: 1px solid #222;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
 .logo {
+    flex-shrink: 0;
     font-size: 30px;
     font-weight: 800;
-    letter-spacing: -1px;
     color: #3b82f6;
-    cursor: pointer;
     white-space: nowrap;
 }
 
@@ -33,41 +35,26 @@
 .menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     list-style: none;
-    gap: 34px;
+    gap: 28px;
+    flex-shrink: 0;
 }
 
 .menu li {
-    position: relative;
     font-size: 15px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .menu a {
     text-decoration: none;
     color: #d1d5db;
-    transition: color 0.25s ease;
-    padding: 8px 2px;
-}
-
-.menu a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background: #3b82f6;
-    border-radius: 10px;
-    transition: width 0.25s ease;
+    transition: 0.25s ease;
 }
 
 .menu a:hover {
-    color: #ffffff;
-}
-
-.menu a:hover::after {
-    width: 100%;
+    color: #3b82f6;
 }
 
 .right {
@@ -75,45 +62,68 @@
     align-items: center;
     gap: 12px;
     position: relative;
+    min-width: 0;
 }
 
 .search-box {
     position: relative;
-    width: 260px;
+    width: 230px;
 }
 
 .right input {
     width: 100%;
-    height: 43px;
-    padding: 0 16px;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
+    height: 42px;
+    padding: 10px 13px;
     background: #111111;
-    color: #ffffff;
-    font-size: 14px;
+    color: #f8fafc;
+    border: 1px solid #2b2b2b;
+    border-radius: 9px;
     outline: none;
-    transition: all 0.25s ease;
+    font-size: 14px;
 }
 
 .right input::placeholder {
-    color: #777777;
+    color: #666;
 }
 
 .right input:focus {
-    background: #151515;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
+
+.right button {
+    height: 42px;
+    padding: 0 17px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: 0.25s ease;
+}
+
+.right button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================
+   SEARCH SUGGESTIONS
+========================= */
 
 .suggestions {
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 7px);
     left: 0;
     width: 100%;
     background: #111111;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    border: 1px solid #292929;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
     z-index: 9999;
     overflow: hidden;
     max-height: 250px;
@@ -124,13 +134,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 13px 15px;
-    cursor: pointer;
+    padding: 12px 14px;
     color: #d1d5db;
-    font-size: 14px;
-    font-weight: 500;
-    border-bottom: 1px solid #222222;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    border-bottom: 1px solid #222;
+    transition: 0.2s ease;
 }
 
 .suggestion-item:last-child {
@@ -138,100 +146,218 @@
 }
 
 .suggestion-item:hover {
-    background: #1a1a1a;
+    background: #1b1b1b;
     color: #60a5fa;
-    padding-left: 19px;
 }
 
 .not-found {
-    justify-content: center;
-    color: #ef4444;
-}
-
-.not-found:hover {
     color: #f87171;
-    background: #1a0a0a;
-    padding-left: 15px;
 }
 
-.right button {
-    height: 43px;
-    padding: 0 20px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-}
 
-.right button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
-}
+/* =========================
+   LAPTOP
+========================= */
 
-.profile-btn {
-    min-width: 145px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+@media (max-width: 1200px) {
 
-@media (max-width: 1100px) {
     .navbar {
-        padding: 15px 25px;
+        padding: 14px 3%;
+        gap: 18px;
+    }
+
+    .logo {
+        font-size: 27px;
     }
 
     .menu {
         gap: 20px;
     }
 
+    .menu li {
+        font-size: 14px;
+    }
+
     .search-box {
-        width: 210px;
+        width: 200px;
+    }
+
+    .right {
+        gap: 8px;
+    }
+
+    .right button {
+        padding: 0 13px;
     }
 }
 
-@media (max-width: 850px) {
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 950px) {
+
     .navbar {
         flex-wrap: wrap;
-        gap: 15px;
+        justify-content: center;
+        padding: 14px 20px;
+        gap: 12px;
+    }
+
+    .logo {
+        width: 100%;
+        text-align: center;
+        font-size: 27px;
     }
 
     .menu {
+        order: 2;
+        width: 100%;
+        gap: 25px;
+        overflow-x: auto;
+        justify-content: center;
+        padding: 2px 5px 7px;
+        scrollbar-width: none;
+    }
+
+    .menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu li {
+        flex-shrink: 0;
+    }
+
+    .right {
         order: 3;
         width: 100%;
         justify-content: center;
     }
 
-    .right {
-        margin-left: auto;
+    .search-box {
+        width: 100%;
+        max-width: 420px;
     }
 }
 
+
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 600px) {
+
     .navbar {
-        padding: 14px 16px;
+        padding: 12px 14px;
+        gap: 9px;
     }
 
     .logo {
-        font-size: 25px;
+        font-size: 24px;
+    }
+
+    .menu {
+        justify-content: flex-start;
+        gap: 20px;
+        padding: 2px 3px 6px;
+    }
+
+    .menu li {
+        font-size: 13px;
     }
 
     .right {
         width: 100%;
+        gap: 7px;
     }
 
     .search-box {
         flex: 1;
         width: auto;
+        min-width: 0;
+    }
+
+    .right input {
+        height: 40px;
+        padding: 9px 11px;
+        font-size: 13px;
+    }
+
+    .right button {
+        height: 40px;
+        padding: 0 11px;
+        font-size: 12px;
+    }
+
+    .suggestions {
+        max-height: 210px;
+    }
+
+    .suggestion-item {
+        padding: 11px 12px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media (max-width: 400px) {
+
+    .navbar {
+        padding: 11px 10px;
+    }
+
+    .logo {
+        font-size: 22px;
     }
 
     .menu {
-        gap: 16px;
-        overflow-x: auto;
-        justify-content: flex-start;
+        gap: 17px;
+    }
+
+    .menu li {
+        font-size: 12px;
+    }
+
+    .right {
+        gap: 6px;
+    }
+
+    .right input {
+        font-size: 12px;
+        padding: 9px;
+    }
+
+    .right button {
+        padding: 0 9px;
+        font-size: 11px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 340px) {
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .menu {
+        gap: 14px;
+    }
+
+    .menu li {
+        font-size: 11px;
+    }
+
+    .right button {
+        padding: 0 8px;
     }
 }

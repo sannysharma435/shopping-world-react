@@ -26,30 +26,96 @@
 }
 
 .product-grid {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 30px;
     align-items: stretch;
+    justify-items: stretch;
 }
 
-@media (max-width: 768px) {
+/* =========================
+   LARGE LAPTOP
+========================= */
+
+@media (max-width: 1200px) {
+
     .products {
         width: 92%;
-        margin: 60px auto;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 25px;
+    }
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .products {
+        width: 92%;
+        margin: 65px auto;
     }
 
     .products h2 {
-        font-size: 30px;
+        font-size: 32px;
+        margin-bottom: 35px;
     }
 
     .product-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
+        gap: 20px;
     }
 }
 
-@media (max-width: 520px) {
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .products {
+        width: 92%;
+        margin: 55px auto;
+        padding: 0;
+    }
+
+    .products h2 {
+        font-size: 29px;
+        margin-bottom: 30px;
+    }
+
     .product-grid {
         grid-template-columns: 1fr;
+        gap: 22px;
+        justify-items: center;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    .products {
+        width: 94%;
+        margin: 45px auto;
+    }
+
+    .products h2 {
+        font-size: 26px;
+        margin-bottom: 27px;
+    }
+
+    .product-grid {
+        gap: 18px;
     }
 }

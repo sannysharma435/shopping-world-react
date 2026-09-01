@@ -25,12 +25,14 @@
 }
 
 .category-grid {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 25px;
 }
 
 .category-card {
+    min-width: 0;
     background: #111111;
     padding: 40px 20px;
     border-radius: 18px;
@@ -71,6 +73,7 @@
     z-index: 1;
     color: #3b82f6;
     font-size: 23px;
+    line-height: 1.3;
     margin-bottom: 12px;
 }
 
@@ -101,29 +104,112 @@
     transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-    .categories-page {
-        width: 94%;
-        margin: 50px auto;
-    }
 
-    .categories-page h1 {
-        font-size: 30px;
-        margin-bottom: 35px;
+/* =========================
+   LAPTOP
+========================= */
+
+@media (max-width: 1200px) {
+
+    .categories-page {
+        width: 92%;
     }
 
     .category-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 18px;
-    }
-
-    .category-card {
-        padding: 30px 15px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
     }
 }
 
-@media (max-width: 480px) {
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 900px) {
+
+    .categories-page {
+        width: 92%;
+        margin: 55px auto;
+    }
+
+    .categories-page h1 {
+        font-size: 34px;
+        margin-bottom: 38px;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .category-card {
+        padding: 32px 18px;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .categories-page {
+        width: 92%;
+        margin: 45px auto;
+    }
+
+    .categories-page h1 {
+        font-size: 29px;
+        margin-bottom: 30px;
+    }
+
     .category-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .category-card {
+        padding: 28px 18px;
+        border-radius: 16px;
+    }
+
+    .category-card h2 {
+        font-size: 21px;
+    }
+
+    .category-card p {
+        font-size: 14px;
+    }
+
+    .category-card button {
+        width: 100%;
+        max-width: 220px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 380px) {
+
+    .categories-page {
+        width: 94%;
+        margin: 40px auto;
+    }
+
+    .categories-page h1 {
+        font-size: 26px;
+    }
+
+    .category-card {
+        padding: 25px 15px;
+    }
+
+    .category-card h2 {
+        font-size: 20px;
     }
 }
