@@ -17,7 +17,7 @@ function Login({ setUser }) {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/api/login",
+        "https://shopping-world-react-production.up.railway.app/api/login",
         {
           method: "POST",
           headers: {
