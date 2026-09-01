@@ -17,7 +17,7 @@ function Login({ setUser }) {
 
     try {
       const response = await fetch(
-        "https://shopping-world-react-production.up.railway.app/api/login",
+        "https://shopping-world-react-production-3fd5.up.railway.app/api/login",
         {
           method: "POST",
           headers: {

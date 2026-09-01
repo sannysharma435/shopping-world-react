@@ -32,7 +32,7 @@ function Signup() {
     try {
 
       const response = await fetch(
-        "https://shopping-world-react-production.up.railway.app/api/signup",
+        "https://shopping-world-react-production-3fd5.up.railway.app/api/signup",
         {
           method: "POST",
           headers: {
