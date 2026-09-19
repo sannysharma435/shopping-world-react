@@ -8,8 +8,10 @@ import smtplib
 from email.message import EmailMessage
 from datetime import datetime, timedelta
 
+
 app = Flask(__name__)
 CORS(app)
+
 
 otp_store = {}
 
@@ -129,6 +131,11 @@ def get_products():
 def signup():
     data = request.get_json()
 
+    if not data:
+        return {
+            "message": "Please provide signup data"
+        }, 400
+
     name = data.get("name")
     email = data.get("email")
     phone = data.get("phone")
@@ -166,7 +173,12 @@ def signup():
             (name, email, phone, password)
             VALUES (%s, %s, %s, %s)
             """,
-            (name, email, phone, hashed_password)
+            (
+                name,
+                email,
+                phone,
+                hashed_password
+            )
         )
 
         db.commit()
@@ -190,6 +202,11 @@ def signup():
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
+
+    if not data:
+        return {
+            "message": "Please provide login data"
+        }, 400
 
     email = data.get("email")
     password = data.get("password")
@@ -222,7 +239,10 @@ def login():
                 "message": "Invalid email or password"
             }, 401
 
-        if not check_password_hash(user["password"], password):
+        if not check_password_hash(
+            user["password"],
+            password
+        ):
             cursor.close()
             db.close()
 
@@ -253,6 +273,11 @@ def login():
 def forgot_password():
     data = request.get_json()
 
+    if not data:
+        return {
+            "message": "Please provide email"
+        }, 400
+
     email = data.get("email")
 
     if not email:
@@ -279,25 +304,35 @@ def forgot_password():
                 "message": "No account found with this email"
             }, 404
 
-        otp = str(secrets.randbelow(900000) + 100000)
+        otp = str(
+            secrets.randbelow(900000) + 100000
+        )
 
         otp_store[email] = {
             "otp": otp,
-            "expires": datetime.now() + timedelta(minutes=5)
+            "expires": datetime.now() + timedelta(
+                minutes=5
+            )
         }
 
         sender = os.getenv("MAIL_USERNAME")
         app_password = os.getenv("MAIL_PASSWORD")
 
         if not sender or not app_password:
-            print("OTP ERROR: MAIL_USERNAME or MAIL_PASSWORD is missing")
+            print(
+                "OTP ERROR: MAIL_USERNAME or MAIL_PASSWORD is missing"
+            )
 
             return {
                 "message": "Email configuration is missing"
             }, 500
 
         message = EmailMessage()
-        message["Subject"] = "Shopping World Password Reset OTP"
+
+        message["Subject"] = (
+            "Shopping World Password Reset OTP"
+        )
+
         message["From"] = sender
         message["To"] = email
 
@@ -306,8 +341,16 @@ def forgot_password():
             "This OTP will expire in 5 minutes."
         )
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(sender, app_password)
+        with smtplib.SMTP_SSL(
+            "smtp.gmail.com",
+            465
+        ) as smtp:
+
+            smtp.login(
+                sender,
+                app_password
+            )
+
             smtp.send_message(message)
 
         return {
@@ -326,6 +369,11 @@ def forgot_password():
 @app.route("/api/verify-otp", methods=["POST"])
 def verify_otp():
     data = request.get_json()
+
+    if not data:
+        return {
+            "message": "Email and OTP are required"
+        }, 400
 
     email = data.get("email")
     otp = data.get("otp")
@@ -363,6 +411,11 @@ def verify_otp():
 def reset_password():
     data = request.get_json()
 
+    if not data:
+        return {
+            "message": "Please fill all fields"
+        }, 400
+
     email = data.get("email")
     otp = data.get("otp")
     password = data.get("password")
@@ -392,7 +445,9 @@ def reset_password():
         }, 400
 
     try:
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(
+            password
+        )
 
         db = get_db_connection()
         cursor = db.cursor()
@@ -403,7 +458,10 @@ def reset_password():
             SET password = %s
             WHERE email = %s
             """,
-            (hashed_password, email)
+            (
+                hashed_password,
+                email
+            )
         )
 
         db.commit()
@@ -418,7 +476,10 @@ def reset_password():
         }, 200
 
     except Exception as error:
-        print("RESET PASSWORD ERROR:", error)
+        print(
+            "RESET PASSWORD ERROR:",
+            error
+        )
 
         return {
             "message": "Password reset failed",
@@ -426,9 +487,467 @@ def reset_password():
         }, 500
 
 
+# =========================================================
+# ORDERS
+# =========================================================
+
+@app.route("/api/orders", methods=["POST"])
+def create_order():
+    data = request.get_json()
+
+    if not data:
+        return {
+            "message": "Order data is required"
+        }, 400
+
+    customer = data.get(
+        "customer",
+        {}
+    )
+
+    address = data.get(
+        "deliveryAddress",
+        {}
+    )
+
+    delivery = data.get(
+        "delivery",
+        {}
+    )
+
+    product = data.get(
+        "product",
+        {}
+    )
+
+    payment = data.get(
+        "payment",
+        {}
+    )
+
+    required_customer = [
+        customer.get("name"),
+        customer.get("mobile"),
+        customer.get("email")
+    ]
+
+    required_address = [
+        address.get("house"),
+        address.get("area"),
+        address.get("city"),
+        address.get("state"),
+        address.get("pincode")
+    ]
+
+    required_delivery = [
+        delivery.get("date"),
+        delivery.get("timeSlot")
+    ]
+
+    required_product = [
+        product.get("name"),
+        product.get("quantity"),
+        product.get("price")
+    ]
+
+    if not all(required_customer):
+        return {
+            "message": "Customer details are incomplete"
+        }, 400
+
+    if not all(required_address):
+        return {
+            "message": "Delivery address is incomplete"
+        }, 400
+
+    if not all(required_delivery):
+        return {
+            "message": "Delivery details are incomplete"
+        }, 400
+
+    if not all(required_product):
+        return {
+            "message": "Product details are incomplete"
+        }, 400
+
+    try:
+        order_id = (
+            "SW" +
+            secrets.token_hex(4).upper()
+        )
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO orders (
+                order_id,
+                customer_name,
+                customer_mobile,
+                customer_email,
+                house,
+                area,
+                city,
+                state,
+                pincode,
+                product_name,
+                product_image,
+                quantity,
+                total_amount,
+                payment_method,
+                payment_status,
+                delivery_date,
+                time_slot,
+                order_status
+            )
+            VALUES (
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s
+            )
+            """,
+            (
+                order_id,
+
+                customer["name"],
+                customer["mobile"],
+                customer["email"],
+
+                address["house"],
+                address["area"],
+                address["city"],
+                address["state"],
+                address["pincode"],
+
+                product["name"],
+                product.get("image"),
+
+                int(product["quantity"]),
+                float(product["price"]),
+
+                payment.get(
+                    "method",
+                    "unknown"
+                ),
+
+                payment.get(
+                    "status",
+                    "Pending"
+                ),
+
+                delivery["date"],
+                delivery["timeSlot"],
+
+                "Pending"
+            )
+        )
+
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return {
+            "message": "Order created successfully",
+
+            "order": {
+                "orderId": order_id,
+                "status": "Pending",
+                "customer": customer,
+                "deliveryAddress": address,
+                "delivery": delivery,
+                "product": product,
+                "payment": payment
+            }
+
+        }, 201
+
+    except Exception as error:
+        print(
+            "ORDER ERROR:",
+            error
+        )
+
+        return {
+            "message": "Failed to create order",
+            "error": str(error)
+        }, 500
+
+
+@app.route("/api/orders", methods=["GET"])
+def get_orders():
+    try:
+        db = get_db_connection()
+
+        cursor = db.cursor(
+            dictionary=True
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                order_id,
+                customer_name,
+                customer_mobile,
+                customer_email,
+                house,
+                area,
+                city,
+                state,
+                pincode,
+                product_name,
+                product_image,
+                quantity,
+                total_amount,
+                payment_method,
+                payment_status,
+                delivery_date,
+                time_slot,
+                order_status,
+                created_at
+
+            FROM orders
+
+            ORDER BY created_at DESC
+            """
+        )
+
+        orders = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        for order in orders:
+
+            if order.get(
+                "delivery_date"
+            ):
+                order["delivery_date"] = str(
+                    order["delivery_date"]
+                )
+
+            if order.get(
+                "created_at"
+            ):
+                order["created_at"] = (
+                    order["created_at"].isoformat()
+                )
+
+            if order.get(
+                "total_amount"
+            ) is not None:
+                order["total_amount"] = float(
+                    order["total_amount"]
+                )
+
+        return {
+            "message": "Orders fetched successfully",
+            "orders": orders
+        }, 200
+
+    except Exception as error:
+        print(
+            "GET ORDERS ERROR:",
+            error
+        )
+
+        return {
+            "message": "Failed to fetch orders",
+            "error": str(error)
+        }, 500
+
+
+# =========================================================
+# UPDATE ORDER STATUS
+# =========================================================
+
+@app.route(
+    "/api/orders/<order_id>/status",
+    methods=["PUT"]
+)
+def update_order_status(order_id):
+    data = request.get_json()
+
+    if not data:
+        return {
+            "message": "Order status is required"
+        }, 400
+
+    status = data.get("status")
+
+    allowed_statuses = [
+        "Pending",
+        "Confirmed",
+        "Packed",
+        "Shipped",
+        "Out for Delivery",
+        "Delivered",
+        "Cancelled"
+    ]
+
+    if status not in allowed_statuses:
+        return {
+            "message": "Invalid order status",
+            "allowed_statuses": allowed_statuses
+        }, 400
+
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        cursor.execute(
+            """
+            UPDATE orders
+            SET order_status = %s
+            WHERE order_id = %s
+            """,
+            (
+                status,
+                order_id
+            )
+        )
+
+        if cursor.rowcount == 0:
+            cursor.close()
+            db.close()
+
+            return {
+                "message": "Order not found"
+            }, 404
+
+        db.commit()
+
+        cursor.close()
+        db.close()
+
+        return {
+            "message": "Order status updated successfully",
+            "orderId": order_id,
+            "status": status
+        }, 200
+
+    except Exception as error:
+        print(
+            "UPDATE ORDER STATUS ERROR:",
+            error
+        )
+
+        return {
+            "message": "Failed to update order status",
+            "error": str(error)
+        }, 500
+
+
+# =========================================================
+# SINGLE ORDER
+# =========================================================
+
+@app.route(
+    "/api/orders/<order_id>",
+    methods=["GET"]
+)
+def get_single_order(order_id):
+    try:
+        db = get_db_connection()
+
+        cursor = db.cursor(
+            dictionary=True
+        )
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                order_id,
+                customer_name,
+                customer_mobile,
+                customer_email,
+                house,
+                area,
+                city,
+                state,
+                pincode,
+                product_name,
+                product_image,
+                quantity,
+                total_amount,
+                payment_method,
+                payment_status,
+                delivery_date,
+                time_slot,
+                order_status,
+                created_at
+
+            FROM orders
+
+            WHERE order_id = %s
+            """,
+            (order_id,)
+        )
+
+        order = cursor.fetchone()
+
+        cursor.close()
+        db.close()
+
+        if not order:
+            return {
+                "message": "Order not found"
+            }, 404
+
+        if order.get(
+            "delivery_date"
+        ):
+            order["delivery_date"] = str(
+                order["delivery_date"]
+            )
+
+        if order.get(
+            "created_at"
+        ):
+            order["created_at"] = (
+                order["created_at"].isoformat()
+            )
+
+        if order.get(
+            "total_amount"
+        ) is not None:
+            order["total_amount"] = float(
+                order["total_amount"]
+            )
+
+        return {
+            "message": "Order fetched successfully",
+            "order": order
+        }, 200
+
+    except Exception as error:
+        print(
+            "SINGLE ORDER ERROR:",
+            error
+        )
+
+        return {
+            "message": "Failed to fetch order",
+            "error": str(error)
+        }, 500
+
+
+# =========================================================
+# SERVER
+# =========================================================
+
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=int(os.getenv("PORT", 5000)),
+        port=int(
+            os.getenv(
+                "PORT",
+                5000
+            )
+        ),
         debug=False
     )

@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./ProductDetails.css";
 import productsData from "../data/products";
+import Toast from "../components/Toast";
+import BuyNowModal from "../components/BuyNowModal";
 
 function ProductDetails() {
   const { name } = useParams();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [showBuyModal, setShowBuyModal] = useState(false);
+
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -16,12 +26,74 @@ function ProductDetails() {
 
     const foundProduct = productsData.find(
       (item) =>
-        item.name.toLowerCase() === productName.toLowerCase()
+        item.name.toLowerCase() ===
+        productName.toLowerCase()
     );
 
     setProduct(foundProduct || null);
     setLoading(false);
   }, [name]);
+
+  const showToast = (message, type = "success") => {
+    setToast({
+      show: true,
+      message,
+      type
+    });
+
+    setTimeout(() => {
+      setToast({
+        show: false,
+        message: "",
+        type: "success"
+      });
+    }, 2800);
+  };
+
+  const addToCart = () => {
+    const cart =
+      JSON.parse(
+        localStorage.getItem("shoppingWorldCart")
+      ) || [];
+
+    const existingProduct = cart.find(
+      (item) => item.name === product.name
+    );
+
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      cart.push({
+        image: product.image,
+        name: product.name,
+        price: product.price,
+        rating: product.rating,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem(
+      "shoppingWorldCart",
+      JSON.stringify(cart)
+    );
+
+    window.dispatchEvent(
+      new Event("cartUpdated")
+    );
+
+    showToast(
+      `${product.name} added to cart 🛒`,
+      "success"
+    );
+  };
+
+  const buyNow = () => {
+    setShowBuyModal(true);
+  };
+
+  const closeBuyNow = () => {
+    setShowBuyModal(false);
+  };
 
   if (loading) {
     return (
@@ -44,122 +116,133 @@ function ProductDetails() {
   }
 
   return (
-    <div className="product-details">
+    <>
+      <Toast
+        show={toast.show}
+        message={toast.message}
+        type={toast.type}
+      />
 
-      {/* Product Image */}
-      <div className="details-image">
-
-        {product.discount && (
-          <span className="details-discount">
-            {product.discount}
-          </span>
-        )}
-
-        <img
-          src={product.image}
-          alt={product.name}
+      {showBuyModal && (
+        <BuyNowModal
+          product={product}
+          onClose={closeBuyNow}
         />
+      )}
 
-      </div>
+      <div className="product-details">
 
-      {/* Product Information */}
-      <div className="details-info">
+        <div className="details-image">
 
-        <p className="details-category">
-          {product.category}
-        </p>
-
-        <h1>{product.name}</h1>
-
-        <div className="details-rating">
-          ⭐ {product.rating}
-
-          {product.reviews && (
-            <span>
-              {" "}
-              ({product.reviews} Reviews)
+          {product.discount && (
+            <span className="details-discount">
+              {product.discount}
             </span>
           )}
+
+          <img
+            src={product.image}
+            alt={product.name}
+          />
+
         </div>
 
-        <h2 className="details-price">
-          ₹
-          {typeof product.price === "number"
-            ? product.price.toLocaleString("en-IN")
-            : product.price}
-        </h2>
+        <div className="details-info">
 
-        {product.delivery && (
-          <p className="details-delivery">
-            🚚 {product.delivery}
+          <p className="details-category">
+            {product.category}
           </p>
-        )}
 
-        <hr />
+          <h1>{product.name}</h1>
 
-        <h3>Product Description</h3>
+          <div className="details-rating">
+            ⭐ {product.rating}
 
-        <p className="details-description">
-          {product.description ||
-            "This is a high-quality product available at Shopping World."}
-        </p>
-
-        {/* Product Specifications */}
-        <div className="product-specs">
-
-          {product.brand && (
-            <div>
-              <strong>Brand</strong>
-              <span>{product.brand}</span>
-            </div>
-          )}
-
-          {product.color && (
-            <div>
-              <strong>Color</strong>
-              <span>{product.color}</span>
-            </div>
-          )}
-
-          <div>
-            <strong>Category</strong>
-            <span>{product.category}</span>
+            {product.reviews && (
+              <span>
+                {" "}
+                ({product.reviews} Reviews)
+              </span>
+            )}
           </div>
 
-          {product.availability && (
-            <div>
-              <strong>Availability</strong>
+          <h2 className="details-price">
+            ₹
+            {typeof product.price === "number"
+              ? product.price.toLocaleString("en-IN")
+              : product.price}
+          </h2>
 
-              <span className="stock">
-                ● {product.availability}
-              </span>
-            </div>
+          {product.delivery && (
+            <p className="details-delivery">
+              🚚 {product.delivery}
+            </p>
           )}
 
-        </div>
+          <hr />
 
-        {/* Buttons */}
-        <div className="details-buttons">
+          <h3>Product Description</h3>
 
-          <button
-            className="details-cart"
-            onClick={() => alert("Product added to cart 🛒")}
-          >
-            🛒 Add to Cart
-          </button>
+          <p className="details-description">
+            {product.description ||
+              "This is a high-quality product available at Shopping World."}
+          </p>
 
-          <button
-            className="details-buy"
-            onClick={() => alert("Buy Now feature coming soon ⚡")}
-          >
-            ⚡ Buy Now
-          </button>
+          <div className="product-specs">
+
+            {product.brand && (
+              <div>
+                <strong>Brand</strong>
+                <span>{product.brand}</span>
+              </div>
+            )}
+
+            {product.color && (
+              <div>
+                <strong>Color</strong>
+                <span>{product.color}</span>
+              </div>
+            )}
+
+            <div>
+              <strong>Category</strong>
+              <span>{product.category}</span>
+            </div>
+
+            {product.availability && (
+              <div>
+                <strong>Availability</strong>
+
+                <span className="stock">
+                  ● {product.availability}
+                </span>
+              </div>
+            )}
+
+          </div>
+
+          <div className="details-buttons">
+
+            <button
+              className="details-cart"
+              onClick={addToCart}
+            >
+              🛒 Add to Cart
+            </button>
+
+            <button
+              className="details-buy"
+              onClick={buyNow}
+            >
+              ⚡ Buy Now
+            </button>
+
+          </div>
 
         </div>
 
       </div>
-
-    </div>
+    </>
   );
 }
 

@@ -1,0 +1,293 @@
+.buy-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    z-index: 99998;
+    animation: modalOverlay 0.25s ease;
+}
+
+.buy-modal {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    background: #15151d;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 22px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.55);
+    animation: modalOpen 0.3s ease;
+}
+
+.buy-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.buy-modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.buy-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.buy-modal-header > span {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(245, 158, 11, 0.12);
+    font-size: 24px;
+}
+
+.buy-modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.buy-modal-header p {
+    margin: 4px 0 0;
+    color: #9999a6;
+    font-size: 13px;
+}
+
+.buy-product {
+    display: flex;
+    gap: 18px;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 22px;
+}
+
+.buy-product-image {
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.buy-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.buy-product-info {
+    padding-top: 5px;
+}
+
+.buy-product-info h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+}
+
+.buy-product-info h2 {
+    margin: 8px 0 0;
+    font-size: 21px;
+}
+
+.buy-rating {
+    margin: 0;
+    color: #fbbf24;
+    font-size: 13px;
+}
+
+.buy-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.buy-quantity > span {
+    font-size: 14px;
+    color: #c9c9d2;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 5px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.quantity-control button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 19px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.quantity-control button:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.quantity-control strong {
+    min-width: 18px;
+    text-align: center;
+}
+
+.buy-benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.buy-benefits > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.buy-benefits > div > span {
+    font-size: 20px;
+}
+
+.buy-benefits strong {
+    display: block;
+    font-size: 12px;
+}
+
+.buy-benefits small {
+    display: block;
+    margin-top: 3px;
+    color: #858592;
+    font-size: 10px;
+}
+
+.buy-summary {
+    padding: 16px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.buy-summary > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: #aaaab5;
+    font-size: 14px;
+}
+
+.buy-summary strong {
+    color: #ffffff;
+}
+
+.buy-summary .buy-total {
+    margin-top: 15px;
+    margin-bottom: 0;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 17px;
+}
+
+.buy-total strong {
+    font-size: 21px;
+}
+
+.proceed-payment {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.proceed-payment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);
+}
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .buy-modal {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .buy-product {
+        gap: 12px;
+    }
+
+    .buy-product-image {
+        width: 85px;
+        height: 85px;
+    }
+
+    .buy-product-info h3 {
+        font-size: 14px;
+    }
+
+    .buy-benefits {
+        grid-template-columns: 1fr;
+    }
+}

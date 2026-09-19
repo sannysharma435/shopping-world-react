@@ -110,10 +110,26 @@
     box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25);
 }
 
+.cart-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
 
-/* =========================
-   SEARCH SUGGESTIONS
-========================= */
+.cart-count {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f59e0b;
+    color: #111;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 800;
+}
 
 .suggestions {
     position: absolute;
@@ -154,13 +170,7 @@
     color: #f87171;
 }
 
-
-/* =========================
-   LAPTOP
-========================= */
-
 @media (max-width: 1200px) {
-
     .navbar {
         padding: 14px 3%;
         gap: 18px;
@@ -191,13 +201,7 @@
     }
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 950px) {
-
     .navbar {
         flex-wrap: wrap;
         justify-content: center;
@@ -241,13 +245,7 @@
     }
 }
 
-
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .navbar {
         padding: 12px 14px;
         gap: 9px;
@@ -300,13 +298,7 @@
     }
 }
 
-
-/* =========================
-   SMALL PHONE
-========================= */
-
 @media (max-width: 400px) {
-
     .navbar {
         padding: 11px 10px;
     }
@@ -338,13 +330,7 @@
     }
 }
 
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 340px) {
-
     .logo {
         font-size: 20px;
     }
@@ -360,4 +346,24 @@
     .right button {
         padding: 0 8px;
     }
+}
+.wishlist-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.wishlist-count {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    color: white;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 800;
 }

@@ -1,6 +1,11 @@
 import "./App.css";
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -15,22 +20,43 @@ import Categories from "./Pages/Categories";
 import Contact from "./Pages/Contact";
 import Profile from "./Pages/Profile";
 import ForgotPassword from "./Pages/ForgotPassword";
+import Cart from "./Pages/Cart";
+import Wishlist from "./Pages/Wishlist";
 
-function Home({ search, setSearch }) {
+import AdminLogin from "./Pages/AdminLogin";
+import AdminOrders from "./Pages/AdminOrders";
+
+function Home({ search }) {
   return (
     <>
       <Hero />
       <Products search={search} />
+      <Footer />
     </>
   );
+}
+
+function AdminProtectedRoute() {
+  const isAdmin =
+    localStorage.getItem("shoppingWorldAdmin") === "true";
+
+  if (!isAdmin) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return <AdminOrders />;
 }
 
 function App() {
   const [search, setSearch] = useState("");
 
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("shoppingWorldUser");
-    return savedUser ? JSON.parse(savedUser) : null;
+    const savedUser =
+      localStorage.getItem("shoppingWorldUser");
+
+    return savedUser
+      ? JSON.parse(savedUser)
+      : null;
   });
 
   return (
@@ -49,7 +75,6 @@ function App() {
           element={
             <Home
               search={search}
-              setSearch={setSearch}
             />
           }
         />
@@ -99,9 +124,32 @@ function App() {
           element={<ForgotPassword />}
         />
 
-      </Routes>
+        <Route
+          path="/cart"
+          element={<Cart />}
+        />
 
-      <Footer />
+        <Route
+          path="/wishlist"
+          element={<Wishlist />}
+        />
+
+        <Route
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
+
+        <Route
+          path="/admin/orders"
+          element={<AdminProtectedRoute />}
+        />
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
+
+      </Routes>
 
     </BrowserRouter>
   );
