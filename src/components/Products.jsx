@@ -6,7 +6,11 @@ import ProductCard from "./ProductCard";
 const API_URL =
   "https://shopping-world-react.onrender.com/api/products";
 
-function Products({ search = "" }) {
+function Products({
+  search = "",
+  limit = null,
+  title = "Featured Products"
+}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,11 +45,22 @@ function Products({ search = "" }) {
 
   const searchText = search.trim().toLowerCase();
 
-  const filteredProducts = searchText
+  let filteredProducts = searchText
     ? products.filter((item) =>
         item.name.toLowerCase().includes(searchText)
       )
     : products;
+
+  if (limit) {
+    filteredProducts = [...filteredProducts]
+      .sort((a, b) => {
+        const ratingA = Number(a.rating) || 0;
+        const ratingB = Number(b.rating) || 0;
+
+        return ratingB - ratingA;
+      })
+      .slice(0, limit);
+  }
 
   const openProduct = (productName) => {
     navigate(
@@ -56,7 +71,7 @@ function Products({ search = "" }) {
   return (
     <section className="products">
 
-      <h2>Featured Products</h2>
+      <h2>{title}</h2>
 
       {loading && (
         <h2>Loading Products...</h2>

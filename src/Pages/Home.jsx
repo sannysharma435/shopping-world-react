@@ -153,11 +153,15 @@ function Home({ search }) {
           <span>TRENDING NOW</span>
           <h2>Featured Products</h2>
           <p>
-            Discover products everyone is talking about
+            Our highest-rated products right now
           </p>
         </div>
 
-        <Products search={search} />
+        <Products
+          search={search}
+          limit={4}
+          title=""
+        />
 
       </section>
 
