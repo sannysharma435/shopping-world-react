@@ -2,17 +2,41 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
 import ProductCard from "./ProductCard";
-import productsData from "../data/products";
+
+const API_URL =
+  "https://shopping-world-react.onrender.com/api/products";
 
 function Products({ search = "" }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setProducts(productsData);
-    setLoading(false);
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+
+        setProducts(data);
+      } catch (error) {
+        console.error("PRODUCT FETCH ERROR:", error);
+        setError("Products load nahi ho paaye.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const searchText = search.trim().toLowerCase();
@@ -24,7 +48,9 @@ function Products({ search = "" }) {
     : products;
 
   const openProduct = (productName) => {
-    navigate(`/product/${encodeURIComponent(productName)}`);
+    navigate(
+      `/product/${encodeURIComponent(productName)}`
+    );
   };
 
   return (
@@ -32,12 +58,15 @@ function Products({ search = "" }) {
 
       <h2>Featured Products</h2>
 
-      {loading ? (
-
+      {loading && (
         <h2>Loading Products...</h2>
+      )}
 
-      ) : (
+      {!loading && error && (
+        <h2>{error}</h2>
+      )}
 
+      {!loading && !error && (
         <div className="product-grid">
 
           {filteredProducts.length > 0 ? (
@@ -68,7 +97,6 @@ function Products({ search = "" }) {
           )}
 
         </div>
-
       )}
 
     </section>

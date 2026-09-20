@@ -8,10 +8,8 @@ import {
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Products from "./components/Products";
-import Footer from "./components/Footer";
 
+import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import ProductDetails from "./Pages/ProductDetails";
@@ -25,16 +23,6 @@ import Wishlist from "./Pages/Wishlist";
 
 import AdminLogin from "./Pages/AdminLogin";
 import AdminOrders from "./Pages/AdminOrders";
-
-function Home({ search }) {
-  return (
-    <>
-      <Hero />
-      <Products search={search} />
-      <Footer />
-    </>
-  );
-}
 
 function AdminProtectedRoute() {
   const isAdmin =
@@ -73,9 +61,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Home
-              search={search}
-            />
+            <Home search={search} />
           }
         />
 
