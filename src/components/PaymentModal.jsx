@@ -3,7 +3,7 @@ import "./PaymentModal.css";
 import Toast from "./Toast";
 import OrderConfirmation from "./OrderConfirmation";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://shopping-world-react.onrender.com";
 
 function PaymentModal({
   product,

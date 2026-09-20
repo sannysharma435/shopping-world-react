@@ -21,7 +21,7 @@ function ForgotPassword() {
 
     try {
       const response = await fetch(
-        "https://shopping-world-react-production-3fd5.up.railway.app/api/forgot-password",
+        "https://shopping-world-react.onrender.com/api/forgot-password",
         {
           method: "POST",
           headers: {
