@@ -75,8 +75,8 @@ function Footer() {
           <h3>Contact Us</h3>
 
           <p>📍 Muzaffarpur, Bihar</p>
-          <p>📞 +91 98765 43210</p>
-          <p>✉️ support@shoppingworld.com</p>
+          <p>📞 +91 9934421720</p>
+          <p>✉️ sannysharmasrs@gmail.com</p>
         </div>
 
       </div>
