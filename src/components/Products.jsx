@@ -8,6 +8,7 @@ const API_URL =
 
 function Products({
   search = "",
+  category = "",
   limit = null,
   title = "Featured Products"
 }) {
@@ -44,12 +45,22 @@ function Products({
   }, []);
 
   const searchText = search.trim().toLowerCase();
+  const categoryText = category.trim().toLowerCase();
 
-  let filteredProducts = searchText
-    ? products.filter((item) =>
-        item.name.toLowerCase().includes(searchText)
-      )
-    : products;
+  let filteredProducts = products.filter((item) => {
+    const productName = item.name?.toLowerCase() || "";
+    const productCategory = item.category?.toLowerCase() || "";
+
+    const matchesSearch =
+      !searchText ||
+      productName.includes(searchText);
+
+    const matchesCategory =
+      !categoryText ||
+      productCategory === categoryText;
+
+    return matchesSearch && matchesCategory;
+  });
 
   if (limit) {
     filteredProducts = [...filteredProducts]
@@ -71,7 +82,7 @@ function Products({
   return (
     <section className="products">
 
-      <h2>{title}</h2>
+      {title && <h2>{title}</h2>}
 
       {loading && (
         <h2>Loading Products...</h2>

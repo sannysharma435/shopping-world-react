@@ -1,24 +1,36 @@
-import ProductCard from "../components/ProductCard";
-import products from "../data/products";
+import { useSearchParams } from "react-router-dom";
+import Products from "../components/Products";
 import "./Shop.css";
 
 function Shop() {
+  const [searchParams] = useSearchParams();
+
+  const category = searchParams.get("category");
+
   return (
     <section className="shop-page">
 
-      <h1>Shop All Products</h1>
+      <div className="shop-heading">
+        <span>SHOPPING WORLD</span>
 
-      <div className="shop-grid">
-        {products.map((item, index) => (
-          <ProductCard
-            key={index}
-            image={item.image}
-            name={item.name}
-            price={item.price}
-            rating={item.rating}
-          />
-        ))}
+        <h1>
+          {category
+            ? `${category} Products`
+            : "Shop All Products"}
+        </h1>
+
+        <p>
+          {category
+            ? `Explore all products from ${category}`
+            : "Explore our complete collection of products"}
+        </p>
       </div>
+
+      <Products
+        search={category || ""}
+        limit={null}
+        title=""
+      />
 
     </section>
   );
