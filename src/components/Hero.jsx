@@ -24,14 +24,7 @@ function Hero() {
 
       </div>
 
-      <div className="hero-right">
-
-        <img
-          src="/hero-shopping.png"
-          alt="Shopping World"
-        />
-
-      </div>
+      <div className="hero-right"></div>
 
     </section>
   );
