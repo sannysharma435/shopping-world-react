@@ -7,46 +7,56 @@
 
 .login-container {
     width: 100%;
-    min-height: 85vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 50px 20px;
+    align-items: flex-start;
+    padding: 125px 20px 60px;
     background:
         radial-gradient(
             circle at 20% 30%,
-            rgba(37, 99, 235, 0.1),
+            rgba(37, 99, 235, 0.12),
             transparent 30%
         ),
         radial-gradient(
             circle at 80% 70%,
-            rgba(245, 158, 11, 0.05),
+            rgba(37, 99, 235, 0.06),
             transparent 30%
         ),
-        #050505;
+        #05070b;
 }
 
 .login-box {
     width: 100%;
-    max-width: 400px;
-    background: #111111;
+    max-width: 555px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.02)
+        );
     padding: 42px;
     border-radius: 22px;
-    border: 1px solid #242424;
-    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.5),
+        0 0 35px rgba(37, 99, 235, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     text-align: center;
 }
 
 .login-box h1 {
     font-size: 38px;
     font-weight: 800;
-    color: #3b82f6;
+    color: #60a5fa;
     margin-bottom: 10px;
     line-height: 1.2;
 }
 
 .login-box h1 span {
-    color: #f59e0b;
+    color: #93c5fd;
 }
 
 .login-box h2 {
@@ -60,33 +70,39 @@
     width: 100%;
     padding: 14px 15px;
     margin-bottom: 18px;
-    border: 1px solid #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 10px;
     font-size: 15px;
-    background: #0a0a0a;
+    background: rgba(5, 7, 11, 0.8);
     color: #f8fafc;
     outline: none;
     transition: all 0.25s ease;
 }
 
 .login-box input::placeholder {
-    color: #6b7280;
+    color: #687386;
 }
 
 .login-box input:hover {
-    border-color: #3a3a3a;
+    border-color: rgba(37, 99, 235, 0.3);
 }
 
 .login-box input:focus {
     border-color: #2563eb;
-    background: #0d0d0d;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    background: rgba(8, 12, 20, 0.95);
+    box-shadow:
+        0 0 0 4px rgba(37, 99, 235, 0.1),
+        0 0 20px rgba(37, 99, 235, 0.08);
 }
 
 .login-box button {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
     color: white;
     border: none;
     border-radius: 10px;
@@ -98,7 +114,11 @@
 }
 
 .login-box button:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    background: linear-gradient(
+        135deg,
+        #1d4ed8,
+        #1e40af
+    );
     transform: translateY(-2px);
     box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
 }
@@ -110,7 +130,7 @@
 .login-box p {
     margin-top: 20px;
     font-size: 14px;
-    color: #9ca3af;
+    color: #9ca8bb;
     line-height: 1.6;
 }
 
@@ -131,16 +151,11 @@
     word-break: break-word;
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 768px) {
-
     .login-container {
-        min-height: 75vh;
-        padding: 45px 25px;
+        min-height: 100vh;
+        padding: 115px 25px 45px;
+        align-items: flex-start;
     }
 
     .login-box {
@@ -157,16 +172,11 @@
     }
 }
 
-
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .login-container {
-        min-height: 70vh;
-        padding: 35px 16px;
+        min-height: 100vh;
+        padding: 105px 16px 35px;
+        align-items: flex-start;
     }
 
     .login-box {
@@ -201,15 +211,9 @@
     }
 }
 
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 380px) {
-
     .login-container {
-        padding: 28px 12px;
+        padding: 100px 12px 28px;
     }
 
     .login-box {

@@ -5,18 +5,27 @@
     min-height: 550px;
     display: flex;
     align-items: center;
-    background: #050505;
+    background: #05070b;
+    color: #f8fafc;
 }
 
 .contact-box {
     width: 100%;
-    background: #101010;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.02)
+        );
     padding: 48px;
     border-radius: 24px;
-    border: 1px solid #252525;
+    border: 1px solid rgba(37, 99, 235, 0.16);
     box-shadow:
-        0 25px 60px rgba(0, 0, 0, 0.7),
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        0 0 35px rgba(37, 99, 235, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .contact-box h1 {
@@ -33,16 +42,21 @@
     display: block;
     width: 55px;
     height: 4px;
-    background: linear-gradient(90deg, #2563eb, #f59e0b);
+    background: linear-gradient(
+        90deg,
+        #2563eb,
+        #60a5fa
+    );
     border-radius: 10px;
     margin: 12px auto 0;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.35);
 }
 
 .contact-text {
     max-width: 650px;
     margin: 0 auto 32px;
     text-align: center;
-    color: #9ca3af;
+    color: #9ca8bb;
     line-height: 1.7;
     font-size: 15px;
 }
@@ -57,9 +71,9 @@
 .contact-form textarea {
     width: 100%;
     padding: 15px 16px;
-    background: #080808;
+    background: rgba(5, 7, 11, 0.8);
     color: #f8fafc;
-    border: 1px solid #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 11px;
     font-size: 15px;
     font-family: Arial, sans-serif;
@@ -69,18 +83,18 @@
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-    color: #666666;
+    color: #687386;
 }
 
 .contact-form input:hover,
 .contact-form textarea:hover {
-    border-color: #3a3a3a;
+    border-color: rgba(37, 99, 235, 0.3);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
     border-color: #2563eb;
-    background: #0c0c0c;
+    background: rgba(8, 12, 20, 0.95);
     box-shadow:
         0 0 0 4px rgba(37, 99, 235, 0.1),
         0 0 20px rgba(37, 99, 235, 0.08);
@@ -96,7 +110,11 @@
     padding: 15px;
     border: none;
     border-radius: 11px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
     color: #ffffff;
     font-size: 16px;
     font-weight: 700;
@@ -125,13 +143,7 @@
     font-weight: 600;
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 900px) {
-
     .contact-page {
         width: 92%;
         margin: 55px auto;
@@ -147,13 +159,7 @@
     }
 }
 
-
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .contact-page {
         width: 92%;
         margin: 40px auto;
@@ -195,13 +201,7 @@
     }
 }
 
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 380px) {
-
     .contact-page {
         width: 94%;
         margin: 30px auto;

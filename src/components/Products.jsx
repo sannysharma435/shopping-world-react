@@ -6,6 +6,14 @@ import ProductCard from "./ProductCard";
 const API_URL =
   "https://shopping-world-react.onrender.com/api/products";
 
+function normalizeText(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ");
+}
+
 function Products({
   search = "",
   category = "",
@@ -32,10 +40,19 @@ function Products({
 
         const data = await response.json();
 
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid products data");
+        }
+
         setProducts(data);
+
       } catch (error) {
         console.error("PRODUCT FETCH ERROR:", error);
-        setError("Products load nahi ho paaye.");
+
+        setError(
+          "Products load nahi ho paaye. Please try again."
+        );
+
       } finally {
         setLoading(false);
       }
@@ -44,12 +61,13 @@ function Products({
     fetchProducts();
   }, []);
 
-  const searchText = search.trim().toLowerCase();
-  const categoryText = category.trim().toLowerCase();
+  const searchText = normalizeText(search);
+  const categoryText = normalizeText(category);
 
   let filteredProducts = products.filter((item) => {
-    const productName = item.name?.toLowerCase() || "";
-    const productCategory = item.category?.toLowerCase() || "";
+
+    const productName = normalizeText(item.name);
+    const productCategory = normalizeText(item.category);
 
     const matchesSearch =
       !searchText ||
@@ -62,67 +80,119 @@ function Products({
     return matchesSearch && matchesCategory;
   });
 
-  if (limit) {
+
+  /*
+    Trending/Home par limit lagegi.
+    Shop page par limit null hone par
+    saare matching products dikhenge.
+  */
+
+  if (limit !== null && Number(limit) > 0) {
+
     filteredProducts = [...filteredProducts]
       .sort((a, b) => {
-        const ratingA = Number(a.rating) || 0;
-        const ratingB = Number(b.rating) || 0;
+
+        const ratingA =
+          Number(a.rating) || 0;
+
+        const ratingB =
+          Number(b.rating) || 0;
 
         return ratingB - ratingA;
       })
-      .slice(0, limit);
+      .slice(0, Number(limit));
   }
 
+
   const openProduct = (productName) => {
+
     navigate(
       `/product/${encodeURIComponent(productName)}`
     );
+
   };
+
 
   return (
     <section className="products">
 
-      {title && <h2>{title}</h2>}
+      {title && (
+        <h2>{title}</h2>
+      )}
+
 
       {loading && (
-        <h2>Loading Products...</h2>
+        <div className="products-message">
+          <h2>Loading Products...</h2>
+        </div>
       )}
+
 
       {!loading && error && (
-        <h2>{error}</h2>
+        <div className="products-message">
+          <h2>{error}</h2>
+        </div>
       )}
 
+
       {!loading && !error && (
-        <div className="product-grid">
+
+        <>
 
           {filteredProducts.length > 0 ? (
 
-            filteredProducts.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => openProduct(item.name)}
-                style={{ cursor: "pointer" }}
-              >
-                <ProductCard
-                  image={item.image}
-                  name={item.name}
-                  price={
-                    typeof item.price === "number"
-                      ? `₹${item.price.toLocaleString("en-IN")}`
-                      : item.price
+            <div className="product-grid">
+
+              {filteredProducts.map((item) => (
+
+                <div
+                  key={item.id}
+                  className="product-click-wrapper"
+                  onClick={() =>
+                    openProduct(item.name)
                   }
-                  rating={item.rating}
-                />
-              </div>
-            ))
+                >
+
+                  <ProductCard
+                    image={item.image}
+                    name={item.name}
+                    price={
+                      typeof item.price === "number"
+                        ? `₹${item.price.toLocaleString(
+                            "en-IN"
+                          )}`
+                        : item.price
+                    }
+                    rating={item.rating}
+                  />
+
+                </div>
+
+              ))}
+
+            </div>
 
           ) : (
 
-            <h2>No Products Found 😔</h2>
+            <div className="products-message">
+
+              <h2>
+                No Products Found 😔
+              </h2>
+
+              {category && (
+                <p>
+                  No products available in{" "}
+                  <strong>{category}</strong>.
+                </p>
+              )}
+
+            </div>
 
           )}
 
-        </div>
+        </>
+
       )}
 
     </section>

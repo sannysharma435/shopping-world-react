@@ -11,7 +11,10 @@ function Shop() {
     <section className="shop-page">
 
       <div className="shop-heading">
-        <span>SHOPPING WORLD</span>
+
+        <span>
+          SHOPPING WORLD HUB
+        </span>
 
         <h1>
           {category
@@ -24,10 +27,12 @@ function Shop() {
             ? `Explore all products from ${category}`
             : "Explore our complete collection of products"}
         </p>
+
       </div>
 
+
       <Products
-        search={category || ""}
+        category={category || ""}
         limit={null}
         title=""
       />

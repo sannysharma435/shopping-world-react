@@ -5,11 +5,20 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 55px;
-    background: #101010;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.02)
+        );
     padding: 35px;
     border-radius: 24px;
-    border: 1px solid #252525;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.5),
+        0 0 35px rgba(37, 99, 235, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .details-image {
@@ -19,10 +28,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #181818;
+    background: #0a0d13;
     border-radius: 18px;
     overflow: hidden;
-    border: 1px solid #292929;
+    border: 1px solid rgba(37, 99, 235, 0.14);
 }
 
 .details-image img {
@@ -57,7 +66,7 @@
 }
 
 .details-category {
-    color: #3b82f6;
+    color: #60a5fa;
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -75,27 +84,27 @@
 }
 
 .details-rating {
-    color: #f59e0b;
+    color: #fbbf24;
     font-size: 19px;
     margin-bottom: 20px;
     font-weight: 600;
 }
 
 .details-rating span {
-    color: #777777;
+    color: #777f91;
     font-size: 14px;
     font-weight: 400;
 }
 
 .details-price {
-    color: #3b82f6;
+    color: #60a5fa;
     font-size: 36px;
     font-weight: 800;
     margin-bottom: 15px;
 }
 
 .details-delivery {
-    color: #9ca3af;
+    color: #9ca8bb;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 25px;
@@ -103,7 +112,7 @@
 
 .details-info hr {
     border: none;
-    border-top: 1px solid #292929;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     margin: 25px 0;
 }
 
@@ -114,7 +123,7 @@
 }
 
 .details-description {
-    color: #9ca3af;
+    color: #9ca8bb;
     line-height: 1.8;
     font-size: 15px;
     margin-bottom: 28px;
@@ -129,17 +138,23 @@
 
 .product-specs div {
     min-width: 0;
-    background: #181818;
+    background: rgba(255, 255, 255, 0.035);
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #292929;
+    border: 1px solid rgba(37, 99, 235, 0.12);
     display: flex;
     flex-direction: column;
     gap: 6px;
+    transition: 0.25s ease;
+}
+
+.product-specs div:hover {
+    border-color: rgba(37, 99, 235, 0.28);
+    background: rgba(37, 99, 235, 0.05);
 }
 
 .product-specs strong {
-    color: #777777;
+    color: #777f91;
     font-size: 13px;
 }
 
@@ -173,7 +188,11 @@
 }
 
 .details-cart {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
 }
 
@@ -183,19 +202,18 @@
 }
 
 .details-buy {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2);
+    background: linear-gradient(
+        135deg,
+        #3b82f6,
+        #2563eb
+    );
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
 }
 
 .details-buy:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.3);
 }
-
-
-/* =========================
-   PRODUCT NOT FOUND
-========================= */
 
 .product-not-found {
     width: 100%;
@@ -206,7 +224,7 @@
     justify-content: center;
     text-align: center;
     padding: 80px 20px;
-    background: #050505;
+    background: #05070b;
 }
 
 .product-not-found h1 {
@@ -230,13 +248,7 @@
     transform: translateY(-2px);
 }
 
-
-/* =========================
-   LAPTOP
-========================= */
-
 @media (max-width: 1100px) {
-
     .product-details {
         width: 92%;
         gap: 35px;
@@ -256,13 +268,7 @@
     }
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 900px) {
-
     .product-details {
         width: 92%;
         grid-template-columns: 1fr;
@@ -283,13 +289,7 @@
     }
 }
 
-
-/* =========================
-   SMALL TABLET
-========================= */
-
 @media (max-width: 768px) {
-
     .product-details {
         width: 94%;
         margin: 40px auto;
@@ -330,13 +330,7 @@
     }
 }
 
-
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .product-details {
         width: 92%;
         margin: 30px auto;
@@ -412,13 +406,7 @@
     }
 }
 
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 380px) {
-
     .product-details {
         width: 94%;
         margin: 25px auto;

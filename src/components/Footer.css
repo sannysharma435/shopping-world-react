@@ -1,10 +1,10 @@
 .footer {
     width: 100%;
-    background: #080808;
+    background: #05070b;
     color: #ffffff;
     margin-top: 80px;
-    border-top: 1px solid #222222;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(37, 99, 235, 0.12);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .footer-container {
@@ -36,11 +36,11 @@
 }
 
 .footer-brand h2 span {
-    color: #f59e0b;
+    color: #60a5fa;
 }
 
 .footer-brand p {
-    color: #9ca3af;
+    color: #9ca8bb;
     line-height: 1.7;
     max-width: 340px;
     font-size: 14px;
@@ -54,7 +54,7 @@
 
 .footer-section li {
     margin-bottom: 13px;
-    color: #9ca3af;
+    color: #9ca8bb;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.25s ease;
@@ -67,7 +67,7 @@
 
 .footer-section a {
     text-decoration: none;
-    color: #9ca3af;
+    color: #9ca8bb;
     transition: color 0.25s ease;
 }
 
@@ -76,15 +76,11 @@
 }
 
 .footer-section p {
-    color: #9ca3af;
+    color: #9ca8bb;
     margin-bottom: 13px;
     font-size: 14px;
     line-height: 1.6;
 }
-
-/* =========================
-   SOCIAL ICONS
-========================= */
 
 .social-icons {
     display: flex;
@@ -98,8 +94,8 @@
     height: 42px;
     flex-shrink: 0;
     border-radius: 50%;
-    background: #151515;
-    border: 1px solid #292929;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: #d1d5db;
     display: flex;
     align-items: center;
@@ -118,31 +114,22 @@
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
 }
 
-/* =========================
-   BOTTOM FOOTER
-========================= */
-
 .footer-bottom {
     width: 100%;
-    border-top: 1px solid #222222;
+    border-top: 1px solid rgba(37, 99, 235, 0.12);
     text-align: center;
     padding: 22px 15px;
-    background: #050505;
+    background: #05070b;
 }
 
 .footer-bottom p {
-    color: #666666;
+    color: #68758a;
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
 }
 
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 1024px) {
-
     .footer-container {
         width: 92%;
         grid-template-columns: 1.5fr 1fr 1fr;
@@ -159,12 +146,7 @@
     }
 }
 
-/* =========================
-   SMALL TABLET
-========================= */
-
 @media (max-width: 768px) {
-
     .footer {
         margin-top: 60px;
     }
@@ -190,12 +172,7 @@
     }
 }
 
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .footer {
         margin-top: 50px;
     }
@@ -243,12 +220,7 @@
     }
 }
 
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 380px) {
-
     .footer-container {
         width: 92%;
         padding: 35px 0;

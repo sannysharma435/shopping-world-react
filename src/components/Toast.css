@@ -8,13 +8,14 @@
     align-items: center;
     gap: 14px;
     padding: 14px 18px;
-    background: rgba(20, 20, 28, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #05070b;
+    border: 1px solid rgba(37, 99, 235, 0.2);
     border-radius: 16px;
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.35),
-        0 0 25px rgba(255, 255, 255, 0.05);
+        0 15px 40px rgba(0, 0, 0, 0.55),
+        0 0 25px rgba(37, 99, 235, 0.08);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: white;
     z-index: 99999;
     overflow: hidden;
@@ -41,11 +42,12 @@
     display: block;
     font-size: 15px;
     margin-bottom: 4px;
+    color: #f8fafc;
 }
 
 .toast-content p {
     margin: 0;
-    color: #c9c9d2;
+    color: #9ca8bb;
     font-size: 13px;
     line-height: 1.4;
 }

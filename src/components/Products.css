@@ -3,7 +3,7 @@
     max-width: 1400px;
     margin: 85px auto;
     padding: 0 10px;
-    background: #050505;
+    background: #05070b;
 }
 
 .products h2 {
@@ -20,7 +20,7 @@
     display: block;
     width: 55px;
     height: 4px;
-    background: linear-gradient(90deg, #2563eb, #f59e0b);
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
     border-radius: 10px;
     margin: 12px auto 0;
 }
@@ -34,12 +34,40 @@
     justify-items: stretch;
 }
 
-/* =========================
-   LARGE LAPTOP
-========================= */
+.products-message {
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 20px;
+    background: #05070b;
+    color: #f8fafc;
+}
+
+.products-message h2 {
+    margin-bottom: 10px;
+}
+
+.products-message h2::after {
+    display: none;
+}
+
+.products-message p {
+    color: #8f9bb3;
+    font-size: 14px;
+}
+
+.product-click-wrapper {
+    width: 100%;
+    min-width: 0;
+    cursor: pointer;
+}
 
 @media (max-width: 1200px) {
-
     .products {
         width: 92%;
     }
@@ -50,13 +78,7 @@
     }
 }
 
-
-/* =========================
-   TABLET
-========================= */
-
 @media (max-width: 900px) {
-
     .products {
         width: 92%;
         margin: 65px auto;
@@ -73,13 +95,7 @@
     }
 }
 
-
-/* =========================
-   MOBILE
-========================= */
-
 @media (max-width: 600px) {
-
     .products {
         width: 92%;
         margin: 55px auto;
@@ -96,15 +112,13 @@
         gap: 22px;
         justify-items: center;
     }
+
+    .product-click-wrapper {
+        max-width: 420px;
+    }
 }
 
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media (max-width: 380px) {
-
     .products {
         width: 94%;
         margin: 45px auto;

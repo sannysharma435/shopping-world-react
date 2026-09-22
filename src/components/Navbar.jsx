@@ -65,8 +65,42 @@ function Navbar({ search = "", setSearch, user }) {
       )
     : [];
 
+  const categories = [
+    {
+      name: "Fashion",
+      icon: "👕",
+      description: "Clothing & lifestyle"
+    },
+    {
+      name: "Electronics",
+      icon: "📱",
+      description: "Latest gadgets"
+    },
+    {
+      name: "Shoes",
+      icon: "👟",
+      description: "Trending footwear"
+    },
+    {
+      name: "Audio",
+      icon: "🎧",
+      description: "Music & sound"
+    },
+    {
+      name: "Watches",
+      icon: "⌚",
+      description: "Smart & stylish"
+    },
+    {
+      name: "Home",
+      icon: "🏠",
+      description: "Home essentials"
+    }
+  ];
+
   const openProduct = (productName) => {
     setSearch("");
+
     navigate(
       `/product/${encodeURIComponent(productName)}`
     );
@@ -88,6 +122,12 @@ function Navbar({ search = "", setSearch, user }) {
     navigate("/wishlist");
   };
 
+  const openCategory = (category) => {
+    navigate(
+      `/shop?category=${encodeURIComponent(category)}`
+    );
+  };
+
   return (
     <nav className="navbar">
 
@@ -96,6 +136,7 @@ function Navbar({ search = "", setSearch, user }) {
       </div>
 
       <ul className="menu">
+
         <li>
           <Link to="/">Home</Link>
         </li>
@@ -104,18 +145,79 @@ function Navbar({ search = "", setSearch, user }) {
           <Link to="/shop">Shop</Link>
         </li>
 
-        <li>
-          <Link to="/categories">Categories</Link>
+        <li className="categories-menu">
+
+          <Link to="/categories">
+            Categories
+            <span className="category-chevron">
+              ▾
+            </span>
+          </Link>
+
+          <div className="categories-dropdown">
+
+            <div className="dropdown-header">
+              <div>
+                <span>EXPLORE COLLECTION</span>
+                <h3>Shop by Category</h3>
+              </div>
+
+              <Link
+                to="/categories"
+                className="view-all-link"
+              >
+                View All →
+              </Link>
+            </div>
+
+            <div className="dropdown-grid">
+
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  className="dropdown-category"
+                  onClick={() =>
+                    openCategory(category.name)
+                  }
+                >
+
+                  <div className="dropdown-category-icon">
+                    {category.icon}
+                  </div>
+
+                  <div className="dropdown-category-info">
+                    <strong>
+                      {category.name}
+                    </strong>
+
+                    <span>
+                      {category.description}
+                    </span>
+                  </div>
+
+                  <span className="dropdown-arrow">
+                    →
+                  </span>
+
+                </button>
+              ))}
+
+            </div>
+
+          </div>
+
         </li>
 
         <li>
           <Link to="/contact">Contact</Link>
         </li>
+
       </ul>
 
       <div className="right">
 
         <div className="search-box">
+
           <input
             type="text"
             placeholder="Search Products..."
@@ -146,6 +248,7 @@ function Navbar({ search = "", setSearch, user }) {
 
             </div>
           )}
+
         </div>
 
         <button

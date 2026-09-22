@@ -1,6 +1,6 @@
 .wishlist-page {
     min-height: 80vh;
-    padding: 50px 6%;
+    padding: 125px 6% 50px;
     background: #080808;
     color: #f8fafc;
 }
@@ -194,7 +194,7 @@
 
 @media (max-width: 600px) {
     .wishlist-page {
-        padding: 30px 15px;
+        padding: 105px 15px 30px;
     }
 
     .wishlist-header {

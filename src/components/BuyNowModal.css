@@ -5,8 +5,9 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.72);
+    background: rgba(5, 7, 11, 0.82);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 99998;
     animation: modalOverlay 0.25s ease;
 }
@@ -18,11 +19,13 @@
     max-height: 90vh;
     overflow-y: auto;
     padding: 28px;
-    background: #15151d;
+    background: #05070b;
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.25);
     border-radius: 22px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.55);
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.65),
+        0 0 40px rgba(37, 99, 235, 0.08);
     animation: modalOpen 0.3s ease;
 }
 
@@ -32,9 +35,9 @@
     right: 16px;
     width: 36px;
     height: 36px;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     color: #ffffff;
     font-size: 16px;
     cursor: pointer;
@@ -61,7 +64,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 14px;
-    background: rgba(245, 158, 11, 0.12);
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(37, 99, 235, 0.18);
     font-size: 24px;
 }
 
@@ -72,7 +76,7 @@
 
 .buy-modal-header p {
     margin: 4px 0 0;
-    color: #9999a6;
+    color: #8f9bb3;
     font-size: 13px;
 }
 
@@ -81,7 +85,8 @@
     gap: 18px;
     padding: 16px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     margin-bottom: 22px;
 }
 
@@ -115,6 +120,7 @@
 .buy-product-info h2 {
     margin: 8px 0 0;
     font-size: 21px;
+    color: #60a5fa;
 }
 
 .buy-rating {
@@ -132,7 +138,7 @@
 
 .buy-quantity > span {
     font-size: 14px;
-    color: #c9c9d2;
+    color: #c9d2e3;
 }
 
 .quantity-control {
@@ -142,6 +148,7 @@
     padding: 5px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .quantity-control button {
@@ -149,7 +156,7 @@
     height: 32px;
     border: none;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(37, 99, 235, 0.15);
     color: white;
     font-size: 19px;
     cursor: pointer;
@@ -157,7 +164,7 @@
 }
 
 .quantity-control button:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(37, 99, 235, 0.3);
 }
 
 .quantity-control strong {
@@ -178,7 +185,8 @@
     gap: 10px;
     padding: 12px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .buy-benefits > div > span {
@@ -193,7 +201,7 @@
 .buy-benefits small {
     display: block;
     margin-top: 3px;
-    color: #858592;
+    color: #7f8ba1;
     font-size: 10px;
 }
 
@@ -207,7 +215,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
-    color: #aaaab5;
+    color: #9ca8bb;
     font-size: 14px;
 }
 
@@ -226,6 +234,7 @@
 
 .buy-total strong {
     font-size: 21px;
+    color: #60a5fa;
 }
 
 .proceed-payment {
@@ -233,7 +242,7 @@
     padding: 15px;
     border: none;
     border-radius: 13px;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #ffffff;
     font-size: 15px;
     font-weight: 700;
@@ -243,7 +252,7 @@
 
 .proceed-payment:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
 }
 
 @keyframes modalOpen {

@@ -1,66 +1,156 @@
+import { Link } from "react-router-dom";
 import "./Home.css";
 
 import Hero from "../components/Hero";
 import Products from "../components/Products";
 import Footer from "../components/Footer";
 
-function Home({ search }) {
+function Home({ search = "" }) {
+
+  const categories = [
+    {
+      name: "Fashion",
+      icon: "👕",
+      description: "Trending styles for everyone",
+      tag: "Clothing & Lifestyle"
+    },
+    {
+      name: "Electronics",
+      icon: "📱",
+      description: "Latest gadgets & devices",
+      tag: "Smart Technology"
+    },
+    {
+      name: "Shoes",
+      icon: "👟",
+      description: "Step into something new",
+      tag: "Footwear Collection"
+    },
+    {
+      name: "Audio",
+      icon: "🎧",
+      description: "Music without limits",
+      tag: "Headphones & Speakers"
+    },
+    {
+      name: "Watches",
+      icon: "⌚",
+      description: "Smart & stylish watches",
+      tag: "Time & Wearables"
+    },
+    {
+      name: "Home",
+      icon: "🏠",
+      description: "Make your space better",
+      tag: "Home Essentials"
+    }
+  ];
+
   return (
     <div className="home-page">
 
+      {/* HERO */}
+
       <Hero />
+
+
+      {/* =========================
+          SHOP BY CATEGORY
+      ========================= */}
 
       <section className="home-categories">
 
         <div className="home-section-heading">
-          <span>EXPLORE</span>
-          <h2>Shop by Category</h2>
+
+          <span>
+            EXPLORE COLLECTION
+          </span>
+
+          <h2>
+            Shop by Category
+          </h2>
+
           <p>
-            Find everything you need in one place
+            Discover products made for every part
+            of your lifestyle
           </p>
+
         </div>
+
 
         <div className="category-grid">
 
-          <div className="category-card">
-            <div className="category-icon">👕</div>
-            <h3>Fashion</h3>
-            <p>Trendy styles for everyone</p>
-          </div>
+          {categories.map((category) => (
 
-          <div className="category-card">
-            <div className="category-icon">📱</div>
-            <h3>Electronics</h3>
-            <p>Latest gadgets & devices</p>
-          </div>
+            <Link
+              key={category.name}
+              to={`/shop?category=${encodeURIComponent(
+                category.name
+              )}`}
+              className="category-card-link"
+            >
 
-          <div className="category-card">
-            <div className="category-icon">👟</div>
-            <h3>Shoes</h3>
-            <p>Step into something new</p>
-          </div>
+              <div className="category-card">
 
-          <div className="category-card">
-            <div className="category-icon">🎧</div>
-            <h3>Audio</h3>
-            <p>Music without limits</p>
-          </div>
+                <div className="category-glow"></div>
 
-          <div className="category-card">
-            <div className="category-icon">⌚</div>
-            <h3>Watches</h3>
-            <p>Smart & stylish watches</p>
-          </div>
 
-          <div className="category-card">
-            <div className="category-icon">🏠</div>
-            <h3>Home</h3>
-            <p>Make your space better</p>
-          </div>
+                <div className="category-top">
+
+                  <div className="category-icon">
+                    {category.icon}
+                  </div>
+
+                  <div className="category-arrow">
+                    ↗
+                  </div>
+
+                </div>
+
+
+                <div className="category-info">
+
+                  <h3>
+                    {category.name}
+                  </h3>
+
+                  <p>
+                    {category.description}
+                  </p>
+
+                  <span>
+                    {category.tag}
+                  </span>
+
+                </div>
+
+
+                <div className="category-explore">
+
+                  <span>
+                    Explore Category
+                  </span>
+
+                  <strong>
+                    →
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </Link>
+
+          ))}
 
         </div>
 
       </section>
+
+
+      {/* =========================
+          MEGA SALE
+      ========================= */}
 
       <section className="mega-sale">
 
@@ -71,27 +161,29 @@ function Home({ search }) {
           </span>
 
           <h2>
-            Mega Shopping Sale
+            Mega Sale
           </h2>
 
           <p>
-            Get amazing products at prices you'll love.
+            Grab your favourite products before
+            the offer ends.
           </p>
 
           <div className="sale-discount">
-            UP TO <strong>50%</strong> OFF
+            Get up to
+            <strong>50%</strong>
+            OFF
           </div>
 
-          <button
+          <Link
+            to="/shop"
             className="sale-button"
-            onClick={() => {
-              window.location.href = "/shop";
-            }}
           >
-            Shop Deals →
-          </button>
+            Shop Now →
+          </Link>
 
         </div>
+
 
         <div className="sale-decoration">
           🛍️
@@ -99,63 +191,131 @@ function Home({ search }) {
 
       </section>
 
+
+      {/* =========================
+          WHY SHOPPING WORLD
+      ========================= */}
+
       <section className="why-shopping-world">
 
         <div className="home-section-heading">
-          <span>SHOP WITH CONFIDENCE</span>
-          <h2>Why Choose Shopping World?</h2>
+
+          <span>
+            WHY SHOPPING WORLD
+          </span>
+
+          <h2>
+            Shopping Made Better
+          </h2>
+
           <p>
-            Everything you need for a smooth shopping experience
+            Everything you need for a smooth
+            shopping experience
           </p>
+
         </div>
+
 
         <div className="why-grid">
 
           <div className="why-card">
-            <div className="why-icon">🚚</div>
-            <h3>Fast Delivery</h3>
+
+            <div className="why-icon">
+              🚚
+            </div>
+
+            <h3>
+              Fast Delivery
+            </h3>
+
             <p>
-              Get your orders delivered quickly and safely.
+              Quick and reliable delivery
+              right to your doorstep.
             </p>
+
           </div>
 
-          <div className="why-card">
-            <div className="why-icon">🔒</div>
-            <h3>Secure Payment</h3>
-            <p>
-              Your payment information stays protected.
-            </p>
-          </div>
 
           <div className="why-card">
-            <div className="why-icon">↩️</div>
-            <h3>Easy Returns</h3>
+
+            <div className="why-icon">
+              🔒
+            </div>
+
+            <h3>
+              Secure Shopping
+            </h3>
+
             <p>
-              Simple and convenient return experience.
+              Safe and protected checkout
+              for your orders.
             </p>
+
           </div>
 
+
           <div className="why-card">
-            <div className="why-icon">🎧</div>
-            <h3>24/7 Support</h3>
+
+            <div className="why-icon">
+              💎
+            </div>
+
+            <h3>
+              Quality Products
+            </h3>
+
             <p>
-              We're here whenever you need assistance.
+              Carefully selected products
+              across multiple categories.
             </p>
+
+          </div>
+
+
+          <div className="why-card">
+
+            <div className="why-icon">
+              💬
+            </div>
+
+            <h3>
+              Customer Support
+            </h3>
+
+            <p>
+              We're here whenever
+              you need assistance.
+            </p>
+
           </div>
 
         </div>
 
       </section>
 
+
+      {/* =========================
+          TRENDING PRODUCTS
+      ========================= */}
+
       <section className="trending-products">
 
         <div className="home-section-heading">
-          <span>TRENDING NOW</span>
-          <h2>Featured Products</h2>
+
+          <span>
+            TRENDING NOW
+          </span>
+
+          <h2>
+            Popular Products
+          </h2>
+
           <p>
             Our highest-rated products right now
           </p>
+
         </div>
+
 
         <Products
           search={search}
@@ -163,21 +323,47 @@ function Home({ search }) {
           title=""
         />
 
+
+        <div className="show-more-container">
+
+          <Link
+            to="/shop"
+            className="show-more-button"
+          >
+            Show More Products
+
+            <span>
+              →
+            </span>
+
+          </Link>
+
+        </div>
+
       </section>
+
+
+      {/* =========================
+          NEWSLETTER
+      ========================= */}
 
       <section className="home-newsletter">
 
         <div className="newsletter-content">
 
-          <span>STAY UPDATED</span>
+          <span>
+            STAY UPDATED
+          </span>
 
           <h2>
-            Don't Miss Our Latest Deals
+            Get the Latest Offers
           </h2>
 
           <p>
-            Discover new arrivals, special offers and exclusive deals.
+            Subscribe to our newsletter and
+            never miss a deal.
           </p>
+
 
           <div className="newsletter-box">
 
@@ -195,6 +381,7 @@ function Home({ search }) {
         </div>
 
       </section>
+
 
       <Footer />
 

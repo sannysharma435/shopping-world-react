@@ -18,13 +18,15 @@ function Hero() {
           shoes and much more.
         </p>
 
-        <Link to="/shop">
-          <button>Shop Now</button>
+        <Link to="/shop" className="hero-shop-link">
+          Shop Now
         </Link>
 
       </div>
 
-      <div className="hero-right"></div>
+      <div className="hero-right">
+        <div className="hero-circle"></div>
+      </div>
 
     </section>
   );
