@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import ShoppingAI from "./components/ShoppingAI";
 
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
@@ -136,6 +137,8 @@ function App() {
         />
 
       </Routes>
+
+      <ShoppingAI />
 
     </BrowserRouter>
   );
