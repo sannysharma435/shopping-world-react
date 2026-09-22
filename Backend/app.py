@@ -1455,7 +1455,7 @@ Shopping World product catalog:
         client = OpenAI(api_key=api_key)
 
         response = client.responses.create(
-            model="gpt-5.5",
+            model="gpt-5.6-luna",
             instructions=system_prompt,
             input=input_messages,
             max_output_tokens=800
@@ -1467,7 +1467,8 @@ Shopping World product catalog:
             return {"message": "AI did not return a response"}, 500
 
         return {
-            "message": answer
+            "reply": answer,
+            "products": []
         }, 200
 
     except Exception as error:
