@@ -3,7 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
-from openai import OpenAI
+from google import genai
 import secrets
 import smtplib
 from email.message import EmailMessage
@@ -1394,10 +1394,10 @@ def ai_chat():
     if not message:
         return {"message": "Please enter a message"}, 400
 
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
 
     if not api_key:
-        return {"message": "OpenAI API key is not configured"}, 500
+        return {"message": "Gemini API key is not configured"}, 500
 
     try:
         products = get_products()
@@ -1418,53 +1418,90 @@ def ai_chat():
                 "description": product["description"]
             })
 
-        system_prompt = f"""You are Shopping World AI, the intelligent shopping assistant for Shopping World.
+        system_prompt = f"""
+You are Shopping World AI, the intelligent shopping assistant for Shopping World.
 
 Answer general questions naturally and helpfully, even when they are unrelated to shopping.
-For shopping questions, use only the product catalog provided below for product facts. Never invent products, prices, ratings, discounts, availability, brands, or specifications that are not present in the catalog.
-If the user asks for recommendations, compare relevant products using the catalog and explain why each may fit their requirements.
-If no catalog product matches the request, say that clearly and suggest what information the user could change.
-Understand and reply in the language used by the user. You can respond in English, Hindi, Hinglish, Bengali, Spanish, French, German, or other languages when appropriate.
-Keep answers conversational and useful. Use simple formatting when it improves readability.
-Do not claim to have performed actions that you cannot perform.
+
+For shopping questions, use only the Shopping World product catalog provided below for product facts.
+
+Never invent products, prices, ratings, discounts, availability, brands, specifications, or product details that are not present in the catalog.
+
+If the user asks for recommendations, compare relevant products and explain why they may fit the user's requirements.
+
+If no product matches the request, clearly say that no matching product was found in the current Shopping World catalog.
+
+Understand the language used by the user and reply in the same language.
+
+You can understand and respond in English, Hindi, Hinglish, Bengali, Spanish, French, German, and other languages.
+
+Keep responses conversational, useful, and easy to understand.
+
+You are the AI assistant of an e-commerce website called Shopping World.
 
 Shopping World product catalog:
-{product_context}"""
+{product_context}
+"""
 
-        safe_history = []
+        contents = []
 
         if isinstance(history, list):
             for item in history[-12:]:
                 if not isinstance(item, dict):
                     continue
+
                 role = item.get("role")
                 content = item.get("content")
-                if role in ["user", "assistant"] and isinstance(content, str) and content.strip():
-                    safe_history.append({
-                        "role": role,
-                        "content": content[:4000]
-                    })
 
-        input_messages = safe_history + [
-            {
-                "role": "user",
-                "content": message[:6000]
+                if role not in ["user", "assistant"]:
+                    continue
+
+                if not isinstance(content, str):
+                    continue
+
+                content = content.strip()
+
+                if not content:
+                    continue
+
+                gemini_role = "model" if role == "assistant" else "user"
+
+                contents.append({
+                    "role": gemini_role,
+                    "parts": [
+                        {
+                            "text": content[:4000]
+                        }
+                    ]
+                })
+
+        contents.append({
+            "role": "user",
+            "parts": [
+                {
+                    "text": message[:6000]
+                }
+            ]
+        })
+
+        client = genai.Client(api_key=api_key)
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=contents,
+            config={
+                "system_instruction": system_prompt,
+                "max_output_tokens": 800,
+                "temperature": 0.7
             }
-        ]
-
-        client = OpenAI(api_key=api_key)
-
-        response = client.responses.create(
-            model="gpt-5.6-luna",
-            instructions=system_prompt,
-            input=input_messages,
-            max_output_tokens=800
         )
 
-        answer = response.output_text
+        answer = response.text
 
         if not answer:
-            return {"message": "AI did not return a response"}, 500
+            return {
+                "message": "Gemini did not return a response"
+            }, 500
 
         return {
             "reply": answer,
@@ -1472,9 +1509,10 @@ Shopping World product catalog:
         }, 200
 
     except Exception as error:
-        print("AI CHAT ERROR:", error)
+        print("GEMINI AI CHAT ERROR:", error)
+
         return {
-            "message": "Sorry, I could not connect to the AI right now.",
+            "message": "Sorry, I could not connect to Gemini AI right now.",
             "error": str(error)
         }, 500
 
