@@ -113,6 +113,11 @@ function Products({
   const selectedCategories =
     categoryMap[categoryText] || [];
 
+  const normalizedSelectedCategories =
+    selectedCategories.map((item) =>
+      normalizeText(item)
+    );
+
   let filteredProducts = products.filter((item) => {
     const productName = normalizeText(item.name);
     const productCategory = normalizeText(item.category);
@@ -133,8 +138,8 @@ function Products({
 
     const matchesCategory =
       !categoryText ||
-      selectedCategories.includes(
-        normalizeText(item.category).replace(/\s+/g, "-")
+      normalizedSelectedCategories.includes(
+        productCategory
       );
 
     return matchesSearch && matchesCategory;

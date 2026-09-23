@@ -67,34 +67,34 @@ function Navbar({ search = "", setSearch, user }) {
 
   const categories = [
     {
-      name: "Fashion",
+      name: "Fashion & Clothing",
       icon: "👕",
-      description: "Clothing & lifestyle"
+      description: "Clothes, bags & fashion"
     },
     {
-      name: "Electronics",
+      name: "Electronics & Gadgets",
       icon: "📱",
-      description: "Latest gadgets"
+      description: "Mobiles, laptops & gadgets"
     },
     {
-      name: "Shoes",
+      name: "Footwear",
       icon: "👟",
-      description: "Trending footwear"
+      description: "Shoes & footwear"
     },
     {
-      name: "Audio",
+      name: "Audio & Entertainment",
       icon: "🎧",
-      description: "Music & sound"
+      description: "Headphones & audio"
     },
     {
-      name: "Watches",
+      name: "Watches & Wearables",
       icon: "⌚",
-      description: "Smart & stylish"
+      description: "Watches & smart wear"
     },
     {
-      name: "Home",
+      name: "Home & Living",
       icon: "🏠",
-      description: "Home essentials"
+      description: "Furniture & home essentials"
     }
   ];
 
@@ -157,9 +157,15 @@ function Navbar({ search = "", setSearch, user }) {
           <div className="categories-dropdown">
 
             <div className="dropdown-header">
+
               <div>
-                <span>EXPLORE COLLECTION</span>
-                <h3>Shop by Category</h3>
+                <span>
+                  EXPLORE COLLECTION
+                </span>
+
+                <h3>
+                  Shop by Category
+                </h3>
               </div>
 
               <Link
@@ -168,11 +174,13 @@ function Navbar({ search = "", setSearch, user }) {
               >
                 View All →
               </Link>
+
             </div>
 
             <div className="dropdown-grid">
 
               {categories.map((category) => (
+
                 <button
                   key={category.name}
                   className="dropdown-category"
@@ -186,6 +194,7 @@ function Navbar({ search = "", setSearch, user }) {
                   </div>
 
                   <div className="dropdown-category-info">
+
                     <strong>
                       {category.name}
                     </strong>
@@ -193,6 +202,7 @@ function Navbar({ search = "", setSearch, user }) {
                     <span>
                       {category.description}
                     </span>
+
                   </div>
 
                   <span className="dropdown-arrow">
@@ -200,6 +210,7 @@ function Navbar({ search = "", setSearch, user }) {
                   </span>
 
                 </button>
+
               ))}
 
             </div>
@@ -209,7 +220,9 @@ function Navbar({ search = "", setSearch, user }) {
         </li>
 
         <li>
-          <Link to="/contact">Contact</Link>
+          <Link to="/contact">
+            Contact
+          </Link>
         </li>
 
       </ul>
@@ -230,6 +243,7 @@ function Navbar({ search = "", setSearch, user }) {
 
               {suggestions.length > 0 ? (
                 suggestions.map((item) => (
+
                   <div
                     key={item.id}
                     className="suggestion-item"
@@ -239,11 +253,14 @@ function Navbar({ search = "", setSearch, user }) {
                   >
                     🔍 {item.name}
                   </div>
+
                 ))
               ) : (
+
                 <div className="suggestion-item not-found">
                   ❌ No Products Found
                 </div>
+
               )}
 
             </div>
@@ -262,6 +279,7 @@ function Navbar({ search = "", setSearch, user }) {
               {wishlistCount}
             </span>
           )}
+
         </button>
 
         <button
@@ -275,21 +293,26 @@ function Navbar({ search = "", setSearch, user }) {
               {cartCount}
             </span>
           )}
+
         </button>
 
         {user ? (
+
           <button
             className="profile-btn"
             onClick={handleProfile}
           >
             👤 {user.name}
           </button>
+
         ) : (
+
           <Link to="/login">
             <button>
               👤 Login
             </button>
           </Link>
+
         )}
 
       </div>
