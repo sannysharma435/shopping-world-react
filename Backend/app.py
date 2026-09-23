@@ -4,6 +4,8 @@ import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from google import genai
+from urllib.request import Request, urlopen
+import json
 import secrets
 import smtplib
 from email.message import EmailMessage
@@ -69,496 +71,78 @@ def db_test():
 
 @app.route("/api/products")
 def get_products():
-    products = [
+    try:
+        api_url = "https://dummyjson.com/products?limit=0"
 
-        {
-            "id": 1,
-            "name": "Nike Air Max",
-            "price": 2999,
-            "rating": 4.8,
-            "reviews": 245,
-            "category": "Shoes",
-            "brand": "Nike",
-            "color": "Red",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-            "description": "Nike Air Max is a stylish and comfortable running shoe designed for everyday use, sports and casual wear."
-        },
+        req = Request(
+            api_url,
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            }
+        )
 
-        {
-            "id": 2,
-            "name": "Smart Watch Pro",
-            "price": 4999,
-            "rating": 4.6,
-            "reviews": 245,
-            "category": "Electronics",
-            "brand": "Smart Tech",
-            "color": "Silver",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-            "description": "A stylish smart watch with fitness tracking, notifications and a premium modern design."
-        },
+        with urlopen(req, timeout=15) as response:
+            data = json.loads(response.read().decode("utf-8"))
 
-        {
-            "id": 3,
-            "name": "iPhone",
-            "price": 79999,
-            "rating": 4.9,
-            "reviews": 520,
-            "category": "Mobile",
-            "brand": "Apple",
-            "color": "Black",
-            "discount": "10% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
-            "description": "A premium smartphone with powerful performance, beautiful display and an excellent camera."
-        },
+        products = []
 
-        {
-            "id": 4,
-            "name": "Premium Headphones",
-            "price": 1999,
-            "rating": 4.7,
-            "reviews": 318,
-            "category": "Audio",
-            "brand": "SoundMax",
-            "color": "Black",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
-            "description": "Enjoy immersive sound with comfortable headphones designed for music, movies and gaming."
-        },
+        for product in data.get("products", []):
+            discount_percentage = product.get("discountPercentage", 0)
 
-        {
-            "id": 5,
-            "name": "Adidas Running Shoes",
-            "price": 3499,
-            "rating": 4.7,
-            "reviews": 186,
-            "category": "Shoes",
-            "brand": "Adidas",
-            "color": "White",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3",
-            "description": "Lightweight Adidas running shoes designed for comfort, workouts and everyday walking."
-        },
+            if discount_percentage:
+                discount = f"{round(discount_percentage)}% OFF"
+            else:
+                discount = "No Discount"
 
-        {
-            "id": 6,
-            "name": "Men's Casual T-Shirt",
-            "price": 799,
-            "rating": 4.5,
-            "reviews": 142,
-            "category": "Fashion",
-            "brand": "Urban Style",
-            "color": "Black",
-            "discount": "35% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-            "description": "Premium cotton casual T-shirt with a comfortable fit for everyday wear."
-        },
+            reviews = product.get("reviews", [])
 
-        {
-            "id": 7,
-            "name": "Denim Jacket",
-            "price": 2499,
-            "rating": 4.6,
-            "reviews": 98,
-            "category": "Fashion",
-            "brand": "Urban Style",
-            "color": "Blue",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5",
-            "description": "Classic denim jacket with a modern fit suitable for casual and outdoor outfits."
-        },
+            if isinstance(reviews, list):
+                review_count = len(reviews)
+            else:
+                review_count = 0
 
-        {
-            "id": 8,
-            "name": "Wireless Earbuds",
-            "price": 1599,
-            "rating": 4.5,
-            "reviews": 412,
-            "category": "Audio",
-            "brand": "SoundMax",
-            "color": "White",
-            "discount": "40% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1",
-            "description": "Compact wireless earbuds with clear audio, deep bass and a comfortable fit."
-        },
+            availability = product.get(
+                "availabilityStatus",
+                "In Stock"
+            )
 
-        {
-            "id": 9,
-            "name": "Gaming Mouse",
-            "price": 1299,
-            "rating": 4.7,
-            "reviews": 275,
-            "category": "Gaming",
-            "brand": "GamePro",
-            "color": "Black",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1527814050087-3793815479db",
-            "description": "High precision gaming mouse with responsive controls and ergonomic design."
-        },
+            images = product.get("images", [])
 
-        {
-            "id": 10,
-            "name": "Gaming Keyboard",
-            "price": 2299,
-            "rating": 4.8,
-            "reviews": 194,
-            "category": "Gaming",
-            "brand": "GamePro",
-            "color": "Black",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3",
-            "description": "Mechanical-style gaming keyboard designed for gaming and fast typing."
-        },
+            if images:
+                image = images[0]
+            else:
+                image = product.get("thumbnail", "")
 
-        {
-            "id": 11,
-            "name": "Laptop Backpack",
-            "price": 1499,
-            "rating": 4.6,
-            "reviews": 231,
-            "category": "Accessories",
-            "brand": "TravelPro",
-            "color": "Black",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62",
-            "description": "Durable laptop backpack with multiple compartments for college, office and travel."
-        },
+            products.append({
+                "id": product.get("id"),
+                "name": product.get("title", "Product"),
+                "price": round(float(product.get("price", 0)) * 85),
+                "rating": product.get("rating", 0),
+                "reviews": review_count,
+                "category": product.get("category", "Other"),
+                "brand": product.get("brand", "Generic"),
+                "color": "",
+                "discount": discount,
+                "delivery": "Free Delivery",
+                "availability": availability,
+                "image": image,
+                "description": product.get(
+                    "description",
+                    "No description available."
+                )
+            })
 
-        {
-            "id": 12,
-            "name": "Classic Wrist Watch",
-            "price": 2799,
-            "rating": 4.5,
-            "reviews": 156,
-            "category": "Watches",
-            "brand": "TimeX",
-            "color": "Black",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d",
-            "description": "Elegant classic wrist watch with a premium design suitable for everyday and formal wear."
-        },
+        return products, 200
 
-        {
-            "id": 13,
-            "name": "Women's Handbag",
-            "price": 1899,
-            "rating": 4.6,
-            "reviews": 213,
-            "category": "Fashion",
-            "brand": "StyleBag",
-            "color": "Brown",
-            "discount": "35% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3",
-            "description": "Stylish and spacious handbag designed for everyday use and special occasions."
-        },
+    except Exception as error:
+        print("PRODUCT API ERROR:", error)
 
-        {
-            "id": 14,
-            "name": "Sunglasses",
-            "price": 999,
-            "rating": 4.4,
-            "reviews": 176,
-            "category": "Fashion",
-            "brand": "VisionPro",
-            "color": "Black",
-            "discount": "40% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083",
-            "description": "Modern sunglasses with a stylish frame perfect for everyday outdoor use."
-        },
+        return {
+            "message": "Failed to fetch products",
+            "error": str(error)
+        }, 500
 
-        {
-            "id": 15,
-            "name": "Bluetooth Speaker",
-            "price": 1799,
-            "rating": 4.7,
-            "reviews": 287,
-            "category": "Audio",
-            "brand": "SoundMax",
-            "color": "Black",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1",
-            "description": "Portable Bluetooth speaker with powerful sound and long-lasting battery."
-        },
-
-        {
-            "id": 16,
-            "name": "Tablet",
-            "price": 18999,
-            "rating": 4.6,
-            "reviews": 164,
-            "category": "Electronics",
-            "brand": "TechPad",
-            "color": "Silver",
-            "discount": "15% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0",
-            "description": "Slim tablet with a large display designed for entertainment, study and productivity."
-        },
-
-        {
-            "id": 17,
-            "name": "Laptop",
-            "price": 59999,
-            "rating": 4.8,
-            "reviews": 342,
-            "category": "Electronics",
-            "brand": "TechBook",
-            "color": "Silver",
-            "discount": "10% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
-            "description": "Powerful laptop suitable for students, professionals, coding and entertainment."
-        },
-
-        {
-            "id": 18,
-            "name": "Gaming Controller",
-            "price": 2499,
-            "rating": 4.7,
-            "reviews": 221,
-            "category": "Gaming",
-            "brand": "GamePro",
-            "color": "Black",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1605901309584-818e25960a8f",
-            "description": "Comfortable wireless gaming controller designed for smooth and responsive gameplay."
-        },
-
-        {
-            "id": 19,
-            "name": "LED Desk Lamp",
-            "price": 899,
-            "rating": 4.5,
-            "reviews": 119,
-            "category": "Home",
-            "brand": "HomeLite",
-            "color": "White",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c",
-            "description": "Modern LED desk lamp perfect for studying, working and reading."
-        },
-
-        {
-            "id": 20,
-            "name": "Coffee Maker",
-            "price": 3499,
-            "rating": 4.6,
-            "reviews": 87,
-            "category": "Home",
-            "brand": "HomeBrew",
-            "color": "Black",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd",
-            "description": "Compact coffee maker designed to prepare delicious coffee quickly at home."
-        },
-
-        {
-            "id": 21,
-            "name": "Travel Shoes",
-            "price": 2199,
-            "rating": 4.5,
-            "reviews": 134,
-            "category": "Shoes",
-            "brand": "WalkPro",
-            "color": "Grey",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3",
-            "description": "Comfortable lightweight shoes designed for walking, travel and everyday activities."
-        },
-
-        {
-            "id": 22,
-            "name": "Hoodie",
-            "price": 1599,
-            "rating": 4.7,
-            "reviews": 203,
-            "category": "Fashion",
-            "brand": "Urban Style",
-            "color": "Grey",
-            "discount": "35% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7",
-            "description": "Soft and comfortable hoodie designed for casual everyday fashion."
-        },
-
-        {
-            "id": 23,
-            "name": "Power Bank",
-            "price": 1299,
-            "rating": 4.6,
-            "reviews": 365,
-            "category": "Accessories",
-            "brand": "PowerMax",
-            "color": "Black",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1609592424773-6c9f0a8e6b4e",
-            "description": "High-capacity power bank for charging smartphones and other devices while travelling."
-        },
-
-        {
-            "id": 24,
-            "name": "Phone Case",
-            "price": 499,
-            "rating": 4.4,
-            "reviews": 428,
-            "category": "Accessories",
-            "brand": "CasePro",
-            "color": "Transparent",
-            "discount": "40% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1601593346740-925612772716",
-            "description": "Slim protective phone case with a stylish design and comfortable grip."
-        },
-
-        {
-            "id": 25,
-            "name": "Fitness Band",
-            "price": 1999,
-            "rating": 4.5,
-            "reviews": 245,
-            "category": "Electronics",
-            "brand": "FitTech",
-            "color": "Black",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1576243345690-4e4b79b63288",
-            "description": "Smart fitness band for activity tracking, steps, heart rate and daily workouts."
-        },
-
-        {
-            "id": 26,
-            "name": "Sports Cap",
-            "price": 699,
-            "rating": 4.4,
-            "reviews": 98,
-            "category": "Fashion",
-            "brand": "SportStyle",
-            "color": "Black",
-            "discount": "30% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1521369909029-2afed882baee",
-            "description": "Lightweight sports cap suitable for running, travel and outdoor activities."
-        },
-
-        {
-            "id": 27,
-            "name": "Running T-Shirt",
-            "price": 899,
-            "rating": 4.6,
-            "reviews": 156,
-            "category": "Sports",
-            "brand": "SportStyle",
-            "color": "Blue",
-            "discount": "25% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b",
-            "description": "Breathable sports T-shirt designed for running, workouts and outdoor activities."
-        },
-
-        {
-            "id": 28,
-            "name": "Yoga Mat",
-            "price": 999,
-            "rating": 4.7,
-            "reviews": 189,
-            "category": "Sports",
-            "brand": "FitLife",
-            "color": "Purple",
-            "discount": "20% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f",
-            "description": "Comfortable non-slip yoga mat designed for yoga, stretching and home workouts."
-        },
-
-        {
-            "id": 29,
-            "name": "Office Chair",
-            "price": 8999,
-            "rating": 4.6,
-            "reviews": 112,
-            "category": "Home",
-            "brand": "ComfortSeat",
-            "color": "Black",
-            "discount": "15% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1580480055273-228ff5388ef8",
-            "description": "Ergonomic office chair designed for comfortable long working and study sessions."
-        },
-
-        {
-            "id": 30,
-            "name": "Smart LED Bulb",
-            "price": 699,
-            "rating": 4.5,
-            "reviews": 178,
-            "category": "Home",
-            "brand": "SmartHome",
-            "color": "White",
-            "discount": "35% OFF",
-            "delivery": "Free Delivery",
-            "availability": "In Stock",
-            "image": "https://images.unsplash.com/photo-1507457379470-08b800bebc67",
-            "description": "Smart LED bulb for modern homes with energy-efficient lighting and stylish design."
-        }
-
-    ]
-
-    return products
-
-
-# =========================================================
-# SIGNUP
-# =========================================================
 
 @app.route("/api/signup", methods=["POST"])
 def signup():

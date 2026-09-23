@@ -134,17 +134,20 @@ function ShoppingAI() {
                 throw new Error(
                     data.error ||
                     data.message ||
-                    "AI request failed"
+                    `AI request failed with status ${response.status}`
                 );
             }
+
+            const answer =
+                data.reply ||
+                data.message ||
+                "Sorry, I couldn't generate a response.";
 
             setMessages((previous) => [
                 ...previous,
                 {
                     type: "ai",
-                    text:
-                        data.reply ||
-                        "Sorry, I couldn't generate a response.",
+                    text: answer,
                     products:
                         Array.isArray(data.products)
                             ? data.products
@@ -161,8 +164,7 @@ function ShoppingAI() {
                 ...previous,
                 {
                     type: "ai",
-                    text:
-                        "Sorry, AI se connect nahi ho paya. Please thodi der baad try kijiye."
+                    text: `AI Error: ${error.message}`
                 }
             ]);
         } finally {
