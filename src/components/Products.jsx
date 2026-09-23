@@ -2,50 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
 import ProductCard from "./ProductCard";
+import {
+  getCategoryByName,
+  normalizeCategory
+} from "../data/categories";
 
 const API_URL =
   "https://shopping-world-react.onrender.com/api/products";
-
-const categoryMap = {
-  "fashion & clothing": [
-    "mens-shirts",
-    "tops",
-    "womens-dresses",
-    "womens-bags",
-    "womens-jewellery",
-    "sunglasses",
-    "fragrances",
-    "beauty",
-    "skin-care"
-  ],
-
-  "electronics & gadgets": [
-    "smartphones",
-    "laptops",
-    "tablets",
-    "mobile-accessories"
-  ],
-
-  footwear: [
-    "mens-shoes",
-    "womens-shoes"
-  ],
-
-  "audio & entertainment": [
-    "mobile-accessories"
-  ],
-
-  "watches & wearables": [
-    "mens-watches",
-    "womens-watches"
-  ],
-
-  "home & living": [
-    "furniture",
-    "home-decoration",
-    "kitchen-accessories"
-  ]
-};
 
 function normalizeText(value) {
   return String(value || "")
@@ -108,19 +71,11 @@ function Products({
 
   const searchText = normalizeText(search);
   const searchWords = getSearchWords(search);
-  const categoryText = normalizeText(category);
-
-  const selectedCategories =
-    categoryMap[categoryText] || [];
-
-  const normalizedSelectedCategories =
-    selectedCategories.map((item) =>
-      normalizeText(item)
-    );
+  const categoryData = getCategoryByName(category);
 
   let filteredProducts = products.filter((item) => {
     const productName = normalizeText(item.name);
-    const productCategory = normalizeText(item.category);
+    const productCategory = normalizeCategory(item.category);
     const productBrand = normalizeText(item.brand);
     const productDescription = normalizeText(
       item.description
@@ -136,11 +91,21 @@ function Products({
         searchableText.includes(word)
       );
 
-    const matchesCategory =
-      !categoryText ||
-      normalizedSelectedCategories.includes(
-        productCategory
-      );
+    let matchesCategory = true;
+
+    if (category) {
+      if (categoryData) {
+        matchesCategory =
+          categoryData.products.some(
+            (categoryName) =>
+              normalizeCategory(categoryName) ===
+              productCategory
+          );
+      } else {
+        matchesCategory =
+          productCategory === normalizeCategory(category);
+      }
+    }
 
     return matchesSearch && matchesCategory;
   });

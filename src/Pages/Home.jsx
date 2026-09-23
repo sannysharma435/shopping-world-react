@@ -4,48 +4,9 @@ import "./Home.css";
 import Hero from "../components/Hero";
 import Products from "../components/Products";
 import Footer from "../components/Footer";
+import { categories } from "../data/categories";
 
 function Home({ search = "" }) {
-
-  const categories = [
-    {
-      name: "Fashion & Clothing",
-      icon: "👕",
-      description: "Shirts, dresses, tops, bags & more",
-      tag: "Clothing & Fashion"
-    },
-    {
-      name: "Electronics & Gadgets",
-      icon: "📱",
-      description: "Mobiles, laptops, tablets & gadgets",
-      tag: "Smart Technology"
-    },
-    {
-      name: "Footwear",
-      icon: "👟",
-      description: "Shoes and footwear for everyone",
-      tag: "Shoes & Footwear"
-    },
-    {
-      name: "Audio & Entertainment",
-      icon: "🎧",
-      description: "Headphones, earbuds, speakers & more",
-      tag: "Music & Entertainment"
-    },
-    {
-      name: "Watches & Wearables",
-      icon: "⌚",
-      description: "Watches, smartwatches & wearables",
-      tag: "Time & Smart Wear"
-    },
-    {
-      name: "Home & Living",
-      icon: "🏠",
-      description: "Furniture, kitchen & home essentials",
-      tag: "Home Essentials"
-    }
-  ];
-
   return (
     <div className="home-page">
 

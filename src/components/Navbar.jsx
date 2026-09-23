@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import products from "../data/products";
 import { useEffect, useState } from "react";
+import { categories } from "../data/categories";
 
 function Navbar({ search = "", setSearch, user }) {
   const navigate = useNavigate();
@@ -65,39 +66,6 @@ function Navbar({ search = "", setSearch, user }) {
       )
     : [];
 
-  const categories = [
-    {
-      name: "Fashion & Clothing",
-      icon: "👕",
-      description: "Clothes, bags & fashion"
-    },
-    {
-      name: "Electronics & Gadgets",
-      icon: "📱",
-      description: "Mobiles, laptops & gadgets"
-    },
-    {
-      name: "Footwear",
-      icon: "👟",
-      description: "Shoes & footwear"
-    },
-    {
-      name: "Audio & Entertainment",
-      icon: "🎧",
-      description: "Headphones & audio"
-    },
-    {
-      name: "Watches & Wearables",
-      icon: "⌚",
-      description: "Watches & smart wear"
-    },
-    {
-      name: "Home & Living",
-      icon: "🏠",
-      description: "Furniture & home essentials"
-    }
-  ];
-
   const openProduct = (productName) => {
     setSearch("");
 
@@ -138,11 +106,15 @@ function Navbar({ search = "", setSearch, user }) {
       <ul className="menu">
 
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">
+            Home
+          </Link>
         </li>
 
         <li>
-          <Link to="/shop">Shop</Link>
+          <Link to="/shop">
+            Shop
+          </Link>
         </li>
 
         <li className="categories-menu">

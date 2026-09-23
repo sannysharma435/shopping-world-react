@@ -1,13 +1,104 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Categories.css";
-import {
-  categories,
-  normalizeCategory
-} from "../data/categories";
 
 const API_URL =
   "https://shopping-world-react.onrender.com/api/products";
+
+const categoryGroups = [
+  {
+    name: "Fashion & Clothing",
+    icon: "👕",
+    description: "Clothes, bags, jewellery & fashion",
+    categories: [
+      "mens-shirts",
+      "tops",
+      "womens-dresses",
+      "womens-bags",
+      "womens-jewellery",
+      "sunglasses"
+    ]
+  },
+  {
+    name: "Electronics & Gadgets",
+    icon: "📱",
+    description: "Mobiles, laptops, tablets & gadgets",
+    categories: [
+      "smartphones",
+      "laptops",
+      "tablets",
+      "mobile-accessories"
+    ]
+  },
+  {
+    name: "Footwear",
+    icon: "👟",
+    description: "Shoes & footwear for everyone",
+    categories: [
+      "mens-shoes",
+      "womens-shoes"
+    ]
+  },
+  {
+    name: "Audio & Entertainment",
+    icon: "🎧",
+    description: "Audio products & entertainment",
+    categories: [
+      "mobile-accessories"
+    ]
+  },
+  {
+    name: "Watches & Wearables",
+    icon: "⌚",
+    description: "Watches & smart wearables",
+    categories: [
+      "mens-watches",
+      "womens-watches"
+    ]
+  },
+  {
+    name: "Home & Living",
+    icon: "🏠",
+    description: "Furniture, decor & kitchen essentials",
+    categories: [
+      "furniture",
+      "home-decoration",
+      "kitchen-accessories"
+    ]
+  },
+  {
+    name: "Beauty & Personal Care",
+    icon: "✨",
+    description: "Beauty, skincare & fragrances",
+    categories: [
+      "beauty",
+      "skin-care",
+      "fragrances"
+    ]
+  },
+  {
+    name: "Grocery & Daily Needs",
+    icon: "🛒",
+    description: "Groceries & everyday essentials",
+    categories: [
+      "groceries"
+    ]
+  },
+  {
+    name: "Vehicles & Motors",
+    icon: "🏍️",
+    description: "Motorcycles & automotive products",
+    categories: [
+      "motorcycle"
+    ]
+  }
+];
+
+function normalizeCategory(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
 
 function Categories() {
   const [products, setProducts] = useState([]);
@@ -41,19 +132,17 @@ function Categories() {
     fetchProducts();
   }, []);
 
-  const getProductCount = (category) => {
+  const getProductCount = (categoryList) => {
     return products.filter((product) =>
-      category.products.some(
-        (categoryName) =>
-          normalizeCategory(categoryName) ===
-          normalizeCategory(product.category)
+      categoryList.includes(
+        normalizeCategory(product.category)
       )
     ).length;
   };
 
-  const openCategory = (categoryName) => {
+  const openCategory = (category) => {
     navigate(
-      `/shop?category=${encodeURIComponent(categoryName)}`
+      `/shop?category=${encodeURIComponent(category)}`
     );
   };
 
@@ -70,7 +159,6 @@ function Categories() {
     <section className="categories-page">
 
       <div className="categories-heading">
-
         <span>
           SHOPPING WORLD
         </span>
@@ -83,15 +171,14 @@ function Categories() {
           Explore products across every part of
           your lifestyle
         </p>
-
       </div>
 
       <div className="category-grid">
 
-        {categories.map((category) => {
+        {categoryGroups.map((category) => {
 
           const productCount =
-            getProductCount(category);
+            getProductCount(category.categories);
 
           return (
             <div
