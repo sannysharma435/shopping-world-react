@@ -9,39 +9,39 @@ function Home({ search = "" }) {
 
   const categories = [
     {
-      name: "Fashion",
+      name: "Fashion & Clothing",
       icon: "👕",
-      description: "Trending styles for everyone",
-      tag: "Clothing & Lifestyle"
+      description: "Shirts, dresses, tops, bags & more",
+      tag: "Clothing & Fashion"
     },
     {
-      name: "Electronics",
+      name: "Electronics & Gadgets",
       icon: "📱",
-      description: "Latest gadgets & devices",
+      description: "Mobiles, laptops, tablets & gadgets",
       tag: "Smart Technology"
     },
     {
-      name: "Shoes",
+      name: "Footwear",
       icon: "👟",
-      description: "Step into something new",
-      tag: "Footwear Collection"
+      description: "Shoes and footwear for everyone",
+      tag: "Shoes & Footwear"
     },
     {
-      name: "Audio",
+      name: "Audio & Entertainment",
       icon: "🎧",
-      description: "Music without limits",
-      tag: "Headphones & Speakers"
+      description: "Headphones, earbuds, speakers & more",
+      tag: "Music & Entertainment"
     },
     {
-      name: "Watches",
+      name: "Watches & Wearables",
       icon: "⌚",
-      description: "Smart & stylish watches",
-      tag: "Time & Wearables"
+      description: "Watches, smartwatches & wearables",
+      tag: "Time & Smart Wear"
     },
     {
-      name: "Home",
+      name: "Home & Living",
       icon: "🏠",
-      description: "Make your space better",
+      description: "Furniture, kitchen & home essentials",
       tag: "Home Essentials"
     }
   ];
@@ -49,14 +49,7 @@ function Home({ search = "" }) {
   return (
     <div className="home-page">
 
-      {/* HERO */}
-
       <Hero />
-
-
-      {/* =========================
-          SHOP BY CATEGORY
-      ========================= */}
 
       <section className="home-categories">
 
@@ -77,7 +70,6 @@ function Home({ search = "" }) {
 
         </div>
 
-
         <div className="category-grid">
 
           {categories.map((category) => (
@@ -94,7 +86,6 @@ function Home({ search = "" }) {
 
                 <div className="category-glow"></div>
 
-
                 <div className="category-top">
 
                   <div className="category-icon">
@@ -106,7 +97,6 @@ function Home({ search = "" }) {
                   </div>
 
                 </div>
-
 
                 <div className="category-info">
 
@@ -123,7 +113,6 @@ function Home({ search = "" }) {
                   </span>
 
                 </div>
-
 
                 <div className="category-explore">
 
@@ -146,11 +135,6 @@ function Home({ search = "" }) {
         </div>
 
       </section>
-
-
-      {/* =========================
-          MEGA SALE
-      ========================= */}
 
       <section className="mega-sale">
 
@@ -184,17 +168,11 @@ function Home({ search = "" }) {
 
         </div>
 
-
         <div className="sale-decoration">
           🛍️
         </div>
 
       </section>
-
-
-      {/* =========================
-          WHY SHOPPING WORLD
-      ========================= */}
 
       <section className="why-shopping-world">
 
@@ -215,7 +193,6 @@ function Home({ search = "" }) {
 
         </div>
 
-
         <div className="why-grid">
 
           <div className="why-card">
@@ -235,7 +212,6 @@ function Home({ search = "" }) {
 
           </div>
 
-
           <div className="why-card">
 
             <div className="why-icon">
@@ -253,7 +229,6 @@ function Home({ search = "" }) {
 
           </div>
 
-
           <div className="why-card">
 
             <div className="why-icon">
@@ -270,7 +245,6 @@ function Home({ search = "" }) {
             </p>
 
           </div>
-
 
           <div className="why-card">
 
@@ -293,11 +267,6 @@ function Home({ search = "" }) {
 
       </section>
 
-
-      {/* =========================
-          TRENDING PRODUCTS
-      ========================= */}
-
       <section className="trending-products">
 
         <div className="home-section-heading">
@@ -316,13 +285,10 @@ function Home({ search = "" }) {
 
         </div>
 
-
         <Products
           search={search}
-          limit={4}
           title=""
         />
-
 
         <div className="show-more-container">
 
@@ -342,11 +308,6 @@ function Home({ search = "" }) {
 
       </section>
 
-
-      {/* =========================
-          NEWSLETTER
-      ========================= */}
-
       <section className="home-newsletter">
 
         <div className="newsletter-content">
@@ -364,7 +325,6 @@ function Home({ search = "" }) {
             never miss a deal.
           </p>
 
-
           <div className="newsletter-box">
 
             <input
@@ -381,7 +341,6 @@ function Home({ search = "" }) {
         </div>
 
       </section>
-
 
       <Footer />
 

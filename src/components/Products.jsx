@@ -6,12 +6,59 @@ import ProductCard from "./ProductCard";
 const API_URL =
   "https://shopping-world-react.onrender.com/api/products";
 
+const categoryMap = {
+  "fashion & clothing": [
+    "mens-shirts",
+    "tops",
+    "womens-dresses",
+    "womens-bags",
+    "womens-jewellery",
+    "sunglasses",
+    "fragrances",
+    "beauty",
+    "skin-care"
+  ],
+
+  "electronics & gadgets": [
+    "smartphones",
+    "laptops",
+    "tablets",
+    "mobile-accessories"
+  ],
+
+  footwear: [
+    "mens-shoes",
+    "womens-shoes"
+  ],
+
+  "audio & entertainment": [
+    "mobile-accessories"
+  ],
+
+  "watches & wearables": [
+    "mens-watches",
+    "womens-watches"
+  ],
+
+  "home & living": [
+    "furniture",
+    "home-decoration",
+    "kitchen-accessories"
+  ]
+};
+
 function normalizeText(value) {
   return String(value || "")
     .trim()
     .toLowerCase()
     .replace(/[-_]+/g, " ")
     .replace(/\s+/g, " ");
+}
+
+function getSearchWords(text) {
+  return normalizeText(text)
+    .split(" ")
+    .filter((word) => word.length > 0);
 }
 
 function Products({
@@ -45,14 +92,12 @@ function Products({
         }
 
         setProducts(data);
-
       } catch (error) {
         console.error("PRODUCT FETCH ERROR:", error);
 
         setError(
           "Products load nahi ho paaye. Please try again."
         );
-
       } finally {
         setLoading(false);
       }
@@ -62,36 +107,42 @@ function Products({
   }, []);
 
   const searchText = normalizeText(search);
+  const searchWords = getSearchWords(search);
   const categoryText = normalizeText(category);
 
-  let filteredProducts = products.filter((item) => {
+  const selectedCategories =
+    categoryMap[categoryText] || [];
 
+  let filteredProducts = products.filter((item) => {
     const productName = normalizeText(item.name);
     const productCategory = normalizeText(item.category);
+    const productBrand = normalizeText(item.brand);
+    const productDescription = normalizeText(
+      item.description
+    );
+
+    const searchableText = normalizeText(
+      `${productName} ${productCategory} ${productBrand} ${productDescription}`
+    );
 
     const matchesSearch =
       !searchText ||
-      productName.includes(searchText);
+      searchWords.every((word) =>
+        searchableText.includes(word)
+      );
 
     const matchesCategory =
       !categoryText ||
-      productCategory === categoryText;
+      selectedCategories.includes(
+        normalizeText(item.category).replace(/\s+/g, "-")
+      );
 
     return matchesSearch && matchesCategory;
   });
 
-
-  /*
-    Trending/Home par limit lagegi.
-    Shop page par limit null hone par
-    saare matching products dikhenge.
-  */
-
   if (limit !== null && Number(limit) > 0) {
-
     filteredProducts = [...filteredProducts]
       .sort((a, b) => {
-
         const ratingA =
           Number(a.rating) || 0;
 
@@ -103,15 +154,11 @@ function Products({
       .slice(0, Number(limit));
   }
 
-
   const openProduct = (productName) => {
-
     navigate(
       `/product/${encodeURIComponent(productName)}`
     );
-
   };
-
 
   return (
     <section className="products">
@@ -120,13 +167,11 @@ function Products({
         <h2>{title}</h2>
       )}
 
-
       {loading && (
         <div className="products-message">
           <h2>Loading Products...</h2>
         </div>
       )}
-
 
       {!loading && error && (
         <div className="products-message">
@@ -134,17 +179,12 @@ function Products({
         </div>
       )}
 
-
       {!loading && !error && (
-
         <>
-
           {filteredProducts.length > 0 ? (
-
             <div className="product-grid">
 
               {filteredProducts.map((item) => (
-
                 <div
                   key={item.id}
                   className="product-click-wrapper"
@@ -152,7 +192,6 @@ function Products({
                     openProduct(item.name)
                   }
                 >
-
                   <ProductCard
                     image={item.image}
                     name={item.name}
@@ -165,22 +204,25 @@ function Products({
                     }
                     rating={item.rating}
                   />
-
                 </div>
-
               ))}
 
             </div>
-
           ) : (
-
             <div className="products-message">
 
               <h2>
                 No Products Found 😔
               </h2>
 
-              {category && (
+              {search && (
+                <p>
+                  No products found for{" "}
+                  <strong>"{search}"</strong>.
+                </p>
+              )}
+
+              {category && !search && (
                 <p>
                   No products available in{" "}
                   <strong>{category}</strong>.
@@ -188,11 +230,8 @@ function Products({
               )}
 
             </div>
-
           )}
-
         </>
-
       )}
 
     </section>
