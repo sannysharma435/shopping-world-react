@@ -1,9 +1,42 @@
+:root {
+    --bg-base: #080c14;
+    --bg-surface: #0d1524;
+    --bg-card: #111d30;
+    --bg-card-hover: #162540;
+
+    --accent-primary: #2563eb;
+    --accent-glow: rgba(37, 99, 235, 0.18);
+    --accent-soft: rgba(37, 99, 235, 0.10);
+
+    --border-subtle: rgba(37, 99, 235, 0.15);
+    --border-card: rgba(37, 99, 235, 0.22);
+    --border-card-hover: rgba(37, 99, 235, 0.55);
+
+    --text-primary: #e8edf5;
+    --text-secondary: #7a90b0;
+    --text-muted: #3d5070;
+
+    --radius-card: 14px;
+
+    --shadow-card:
+        0 2px 16px rgba(0, 0, 0, 0.55),
+        0 0 0 1px var(--border-card);
+
+    --shadow-card-hover:
+        0 6px 32px rgba(0, 0, 0, 0.7),
+        0 0 0 1px var(--border-card-hover),
+        0 0 24px var(--accent-glow);
+
+    --transition-smooth: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .products {
     width: 90%;
     max-width: 1400px;
     margin: 85px auto;
     padding: 0 10px;
     background: #05070b;
+    box-sizing: border-box;
 }
 
 .products h2 {
@@ -28,10 +61,17 @@
 .product-grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 30px;
     align-items: stretch;
     justify-items: stretch;
+}
+
+.product-click-wrapper {
+    width: 100%;
+    min-width: 0;
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
 .products-message {
@@ -46,6 +86,7 @@
     border-radius: 20px;
     background: #05070b;
     color: #f8fafc;
+    box-sizing: border-box;
 }
 
 .products-message h2 {
@@ -59,12 +100,7 @@
 .products-message p {
     color: #8f9bb3;
     font-size: 14px;
-}
-
-.product-click-wrapper {
-    width: 100%;
-    min-width: 0;
-    cursor: pointer;
+    line-height: 1.6;
 }
 
 @media (max-width: 1200px) {
@@ -114,6 +150,7 @@
     }
 
     .product-click-wrapper {
+        width: 100%;
         max-width: 420px;
     }
 }
@@ -131,5 +168,19 @@
 
     .product-grid {
         gap: 18px;
+    }
+
+    .product-click-wrapper {
+        max-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-click-wrapper {
+        transition: none;
+    }
+
+    .product-click-wrapper:hover {
+        transform: none;
     }
 }

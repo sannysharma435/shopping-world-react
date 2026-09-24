@@ -15,7 +15,7 @@
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     border-color: rgba(37, 99, 235, 0.4);
     box-shadow:
         0 20px 45px rgba(0, 0, 0, 0.65),
@@ -28,6 +28,7 @@
     height: 235px;
     overflow: hidden;
     background: #0a0d13;
+    cursor: pointer;
 }
 
 .discount {
@@ -59,13 +60,18 @@
     color: #ef4444;
     font-size: 18px;
     transition: all 0.25s ease;
-    z-index: 2;
+    z-index: 5;
 }
 
 .heart:hover {
     transform: scale(1.12);
     background: rgba(239, 68, 68, 0.12);
     border-color: rgba(239, 68, 68, 0.3);
+}
+
+.heart.active {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
 }
 
 .product-card img {
@@ -77,7 +83,7 @@
 }
 
 .product-card:hover img {
-    transform: scale(1.06);
+    transform: scale(1.05);
 }
 
 .product-info {
@@ -97,6 +103,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .rating {
@@ -137,6 +144,7 @@
     font-size: 14px;
     font-weight: 700;
     transition: all 0.25s ease;
+    white-space: nowrap;
 }
 
 .cart-btn {
@@ -157,6 +165,126 @@
 .buy-btn:hover {
     background: #2563eb;
     transform: translateY(-2px);
+}
+
+.login-popup-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 99999;
+}
+
+.login-popup {
+    width: 100%;
+    max-width: 400px;
+    background: #0a0f18;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    border-radius: 22px;
+    padding: 32px 26px 26px;
+    text-align: center;
+    position: relative;
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.65),
+        0 0 35px rgba(37, 99, 235, 0.12);
+    animation: loginPopupShow 0.25s ease;
+}
+
+.login-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.login-popup-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.login-popup-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 17px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    font-size: 30px;
+}
+
+.login-popup h2 {
+    color: #f8fafc;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.login-popup p {
+    color: #9ca8bb;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 23px;
+}
+
+.login-popup-button,
+.login-popup-cancel {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.login-popup-button {
+    background: #2563eb;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.login-popup-button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.login-popup-cancel {
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+}
+
+.login-popup-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes loginPopupShow {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 @media (max-width: 1024px) {
@@ -184,104 +312,51 @@
 @media (max-width: 600px) {
     .product-card {
         width: 100%;
-        max-width: 420px;
-        border-radius: 17px;
+        max-width: 100%;
+        border-radius: 16px;
     }
 
     .image-box {
-        height: 220px;
+        height: 185px;
     }
 
     .discount {
-        top: 11px;
-        left: 11px;
-        padding: 5px 10px;
-        font-size: 11px;
+        top: 10px;
+        left: 10px;
+        padding: 5px 9px;
+        font-size: 10px;
     }
 
     .heart {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        border-radius: 50%;
-        background: rgba(5, 7, 11, 0.85);
-        color: #ffffff;
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 5;
-        transition: 0.25s ease;
-    }
-
-    .heart:hover {
-        transform: scale(1.12);
-        background: rgba(5, 7, 11, 0.95);
-    }
-
-    .heart.active {
-        color: #ef4444;
-        background: rgba(239, 68, 68, 0.12);
+        top: 9px;
+        right: 9px;
+        width: 36px;
+        height: 36px;
+        font-size: 21px;
     }
 
     .product-info {
-        padding: 16px;
+        padding: 13px;
     }
 
     .product-info h3 {
-        font-size: 18px;
-    }
-
-    .product-info h2 {
-        font-size: 25px;
-    }
-
-    .delivery {
-        font-size: 13px;
-    }
-
-    .buttons {
-        flex-direction: row;
-    }
-
-    .cart-btn,
-    .buy-btn {
-        padding: 12px 6px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 380px) {
-    .product-card {
-        border-radius: 15px;
-    }
-
-    .image-box {
-        height: 190px;
-    }
-
-    .product-info {
-        padding: 14px;
-    }
-
-    .product-info h3 {
-        font-size: 17px;
-    }
-
-    .product-info h2 {
-        font-size: 23px;
+        font-size: 16px;
+        margin-bottom: 7px;
     }
 
     .rating {
-        font-size: 13px;
+        font-size: 12px;
+        margin-bottom: 7px;
+    }
+
+    .product-info h2 {
+        font-size: 22px;
+        margin-bottom: 7px;
     }
 
     .delivery {
         font-size: 12px;
+        margin-bottom: 12px;
     }
 
     .buttons {
@@ -290,7 +365,66 @@
 
     .cart-btn,
     .buy-btn {
-        padding: 11px 5px;
-        font-size: 12px;
+        padding: 10px 5px;
+        font-size: 11px;
+        border-radius: 8px;
+    }
+
+    .login-popup {
+        max-width: 360px;
+        padding: 30px 20px 22px;
+        border-radius: 19px;
+    }
+
+    .login-popup h2 {
+        font-size: 21px;
+    }
+
+    .login-popup p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 380px) {
+    .product-card {
+        border-radius: 14px;
+    }
+
+    .image-box {
+        height: 165px;
+    }
+
+    .product-info {
+        padding: 11px;
+    }
+
+    .product-info h3 {
+        font-size: 15px;
+    }
+
+    .product-info h2 {
+        font-size: 20px;
+    }
+
+    .rating {
+        font-size: 11px;
+    }
+
+    .delivery {
+        font-size: 11px;
+    }
+
+    .buttons {
+        gap: 5px;
+    }
+
+    .cart-btn,
+    .buy-btn {
+        padding: 9px 3px;
+        font-size: 10px;
+    }
+
+    .login-popup {
+        padding: 28px 17px 20px;
     }
 }

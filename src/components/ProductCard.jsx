@@ -8,8 +8,8 @@ function ProductCard({ image, name, price, rating }) {
   const navigate = useNavigate();
 
   const [isWishlisted, setIsWishlisted] = useState(false);
-
   const [showBuyModal, setShowBuyModal] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const [toast, setToast] = useState({
     show: false,
@@ -46,14 +46,45 @@ function ProductCard({ image, name, price, rating }) {
     }, 2800);
   };
 
+  const isUserLoggedIn = () => {
+    const user =
+      localStorage.getItem("shoppingWorldUser");
+
+    return !!user;
+  };
+
+  const requireLogin = () => {
+    if (!isUserLoggedIn()) {
+      setShowLoginPopup(true);
+      return false;
+    }
+
+    return true;
+  };
+
   const openProduct = () => {
     navigate(
       `/product/${encodeURIComponent(name)}`
     );
   };
 
+  const goToLogin = () => {
+    setShowLoginPopup(false);
+
+    navigate("/login", {
+      state: {
+        from: window.location.pathname,
+        message: "Please login to continue shopping."
+      }
+    });
+  };
+
   const toggleWishlist = (e) => {
     e.stopPropagation();
+
+    if (!requireLogin()) {
+      return;
+    }
 
     const wishlist =
       JSON.parse(
@@ -106,7 +137,13 @@ function ProductCard({ image, name, price, rating }) {
     );
   };
 
-  const addToCart = () => {
+  const addToCart = (e) => {
+    e.stopPropagation();
+
+    if (!requireLogin()) {
+      return;
+    }
+
     const cart =
       JSON.parse(
         localStorage.getItem("shoppingWorldCart")
@@ -143,7 +180,13 @@ function ProductCard({ image, name, price, rating }) {
     );
   };
 
-  const openBuyNow = () => {
+  const openBuyNow = (e) => {
+    e.stopPropagation();
+
+    if (!requireLogin()) {
+      return;
+    }
+
     setShowBuyModal(true);
   };
 
@@ -171,6 +214,52 @@ function ProductCard({ image, name, price, rating }) {
           product={product}
           onClose={closeBuyNow}
         />
+      )}
+
+      {showLoginPopup && (
+        <div
+          className="login-popup-overlay"
+          onClick={() => setShowLoginPopup(false)}
+        >
+          <div
+            className="login-popup"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="login-popup-close"
+              onClick={() => setShowLoginPopup(false)}
+            >
+              ×
+            </button>
+
+            <div className="login-popup-icon">
+              🔐
+            </div>
+
+            <h2>
+              Login Required
+            </h2>
+
+            <p>
+              Please login first to add products
+              to your cart, wishlist or buy them.
+            </p>
+
+            <button
+              className="login-popup-button"
+              onClick={goToLogin}
+            >
+              Login Now
+            </button>
+
+            <button
+              className="login-popup-cancel"
+              onClick={() => setShowLoginPopup(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="product-card">
