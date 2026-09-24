@@ -6,9 +6,7 @@ import {
   getCategoryByName,
   normalizeCategory
 } from "../data/categories";
-
-const API_URL =
-  "https://shopping-world-react.onrender.com/api/products";
+import { getProducts } from "../services/productService";
 
 function normalizeText(value) {
   return String(value || "")
@@ -37,36 +35,38 @@ function Products({
   const navigate = useNavigate();
 
   useEffect(() => {
+    let active = true;
+
     const fetchProducts = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const response = await fetch(API_URL);
+        const data = await getProducts();
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
+        if (active) {
+          setProducts(data);
         }
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid products data");
-        }
-
-        setProducts(data);
       } catch (error) {
         console.error("PRODUCT FETCH ERROR:", error);
 
-        setError(
-          "Products load nahi ho paaye. Please try again."
-        );
+        if (active) {
+          setError(
+            "Products load nahi ho paaye. Please try again."
+          );
+        }
       } finally {
-        setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       }
     };
 
     fetchProducts();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const searchText = normalizeText(search);
@@ -113,11 +113,8 @@ function Products({
   if (limit !== null && Number(limit) > 0) {
     filteredProducts = [...filteredProducts]
       .sort((a, b) => {
-        const ratingA =
-          Number(a.rating) || 0;
-
-        const ratingB =
-          Number(b.rating) || 0;
+        const ratingA = Number(a.rating) || 0;
+        const ratingB = Number(b.rating) || 0;
 
         return ratingB - ratingA;
       })
@@ -132,10 +129,7 @@ function Products({
 
   return (
     <section className="products">
-
-      {title && (
-        <h2>{title}</h2>
-      )}
+      {title && <h2>{title}</h2>}
 
       {loading && (
         <div className="products-message">
@@ -153,7 +147,6 @@ function Products({
         <>
           {filteredProducts.length > 0 ? (
             <div className="product-grid">
-
               {filteredProducts.map((item) => (
                 <div
                   key={item.id}
@@ -176,14 +169,10 @@ function Products({
                   />
                 </div>
               ))}
-
             </div>
           ) : (
             <div className="products-message">
-
-              <h2>
-                No Products Found 😔
-              </h2>
+              <h2>No Products Found 😔</h2>
 
               {search && (
                 <p>
@@ -198,12 +187,10 @@ function Products({
                   <strong>{category}</strong>.
                 </p>
               )}
-
             </div>
           )}
         </>
       )}
-
     </section>
   );
 }

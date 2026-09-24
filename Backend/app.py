@@ -6,6 +6,7 @@ import os
 from google import genai
 from urllib.request import Request, urlopen
 import json
+import time
 import secrets
 import smtplib
 from email.message import EmailMessage
@@ -69,9 +70,21 @@ def db_test():
 # PRODUCTS
 # =========================================================
 
+products_cache = []
+products_cache_time = 0
+PRODUCT_CACHE_DURATION = 1800
+
 @app.route("/api/products")
 def get_products():
+    global products_cache
+    global products_cache_time
+
     try:
+        current_time = time.time()
+
+        if products_cache and current_time - products_cache_time < PRODUCT_CACHE_DURATION:
+            return products_cache, 200
+
         api_url = "https://dummyjson.com/products?limit=0"
 
         req = Request(
@@ -83,12 +96,17 @@ def get_products():
         )
 
         with urlopen(req, timeout=15) as response:
-            data = json.loads(response.read().decode("utf-8"))
+            data = json.loads(
+                response.read().decode("utf-8")
+            )
 
         products = []
 
         for product in data.get("products", []):
-            discount_percentage = product.get("discountPercentage", 0)
+            discount_percentage = product.get(
+                "discountPercentage",
+                0
+            )
 
             if discount_percentage:
                 discount = f"{round(discount_percentage)}% OFF"
@@ -112,16 +130,33 @@ def get_products():
             if images:
                 image = images[0]
             else:
-                image = product.get("thumbnail", "")
+                image = product.get(
+                    "thumbnail",
+                    ""
+                )
 
             products.append({
                 "id": product.get("id"),
-                "name": product.get("title", "Product"),
-                "price": round(float(product.get("price", 0)) * 85),
-                "rating": product.get("rating", 0),
+                "name": product.get(
+                    "title",
+                    "Product"
+                ),
+                "price": round(
+                    float(product.get("price", 0)) * 85
+                ),
+                "rating": product.get(
+                    "rating",
+                    0
+                ),
                 "reviews": review_count,
-                "category": product.get("category", "Other"),
-                "brand": product.get("brand", "Generic"),
+                "category": product.get(
+                    "category",
+                    "Other"
+                ),
+                "brand": product.get(
+                    "brand",
+                    "Generic"
+                ),
                 "color": "",
                 "discount": discount,
                 "delivery": "Free Delivery",
@@ -133,10 +168,19 @@ def get_products():
                 )
             })
 
+        products_cache = products
+        products_cache_time = current_time
+
         return products, 200
 
     except Exception as error:
-        print("PRODUCT API ERROR:", error)
+        print(
+            "PRODUCT API ERROR:",
+            error
+        )
+
+        if products_cache:
+            return products_cache, 200
 
         return {
             "message": "Failed to fetch products",
