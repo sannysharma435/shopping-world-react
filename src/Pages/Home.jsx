@@ -249,6 +249,8 @@ function Home({ search = "" }) {
         <Products
           search={search}
           title=""
+          limit={5}
+          randomize={true}
         />
 
         <div className="show-more-container">
