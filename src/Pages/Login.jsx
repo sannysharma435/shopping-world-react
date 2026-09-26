@@ -1,9 +1,10 @@
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Login({ setUser }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,7 +46,11 @@ function Login({ setUser }) {
         );
 
         setTimeout(() => {
-          navigate("/");
+          navigate(location.state?.from || "/", {
+            state: location.state?.action
+              ? { resumeAction: location.state.action }
+              : undefined
+          });
         }, 1000);
       } else {
         setMessage("❌ " + data.message);

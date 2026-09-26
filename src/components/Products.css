@@ -67,6 +67,82 @@
     justify-items: stretch;
 }
 
+.products-toolbar {
+    width: 100%;
+    margin-bottom: 25px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border: 1px solid rgba(96, 165, 250, 0.14);
+    border-radius: 14px;
+    background: #0b111c;
+}
+
+.products-result-count {
+    flex-shrink: 0;
+    color: #8f9bb3;
+    font-size: 13px;
+}
+
+.products-result-count strong {
+    color: #f8fafc;
+    font-size: 17px;
+}
+
+.products-filters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.products-filters label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #7a90b0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.products-filters select {
+    min-width: 125px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid rgba(96, 165, 250, 0.18);
+    border-radius: 8px;
+    outline: none;
+    background: #111827;
+    color: #e8edf5;
+    font-size: 12px;
+}
+
+.products-filters select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.clear-filters {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid rgba(239, 68, 68, 0.24);
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.08);
+    color: #fca5a5;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.clear-filters:hover {
+    background: rgba(239, 68, 68, 0.16);
+}
+
 .product-click-wrapper {
     width: 100%;
     min-width: 0;
@@ -129,6 +205,16 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
     }
+
+    .products-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .products-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
 }
 
 @media (max-width: 600px) {
@@ -147,6 +233,27 @@
         grid-template-columns: 1fr;
         gap: 22px;
         justify-items: center;
+    }
+
+    .products-toolbar {
+        padding: 13px;
+    }
+
+    .products-filters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .products-filters label,
+    .products-filters select,
+    .clear-filters {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .clear-filters {
+        grid-column: 1 / -1;
     }
 
     .product-click-wrapper {

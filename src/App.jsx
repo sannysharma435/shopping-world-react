@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -21,6 +21,7 @@ import Profile from "./Pages/Profile";
 import ForgotPassword from "./Pages/ForgotPassword";
 import Cart from "./Pages/Cart";
 import Wishlist from "./Pages/Wishlist";
+import Orders from "./Pages/Orders";
 
 import AdminLogin from "./Pages/AdminLogin";
 import AdminOrders from "./Pages/AdminOrders";
@@ -36,8 +37,19 @@ function AdminProtectedRoute() {
   return <AdminOrders />;
 }
 
+function ProtectedRoute({ user, children }) {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
 function App() {
   const [search, setSearch] = useState("");
+  const [theme, setTheme] = useState(() =>
+    localStorage.getItem("shoppingWorldTheme") || "dark"
+  );
 
   const [user, setUser] = useState(() => {
     const savedUser =
@@ -48,6 +60,11 @@ function App() {
       : null;
   });
 
+  useEffect(() => {
+    localStorage.setItem("shoppingWorldTheme", theme);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
   return (
     <BrowserRouter>
 
@@ -55,6 +72,8 @@ function App() {
         search={search}
         setSearch={setSearch}
         user={user}
+        theme={theme}
+        setTheme={setTheme}
       />
 
       <Routes>
@@ -73,7 +92,7 @@ function App() {
 
         <Route
           path="/shop"
-          element={<Shop />}
+          element={<Shop search={search} />}
         />
 
         <Route
@@ -99,10 +118,12 @@ function App() {
         <Route
           path="/profile"
           element={
-            <Profile
-              user={user}
-              setUser={setUser}
-            />
+            <ProtectedRoute user={user}>
+              <Profile
+                user={user}
+                setUser={setUser}
+              />
+            </ProtectedRoute>
           }
         />
 
@@ -113,12 +134,29 @@ function App() {
 
         <Route
           path="/cart"
-          element={<Cart />}
+          element={
+            <ProtectedRoute user={user}>
+              <Cart />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/wishlist"
-          element={<Wishlist />}
+          element={
+            <ProtectedRoute user={user}>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute user={user}>
+              <Orders />
+            </ProtectedRoute>
+          }
         />
 
         <Route

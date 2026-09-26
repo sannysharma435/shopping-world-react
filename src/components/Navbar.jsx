@@ -202,12 +202,24 @@ function getProductScore(product, search) {
   return score;
 }
 
-function Navbar({ search = "", setSearch, user }) {
+function Navbar({
+  search = "",
+  setSearch,
+  user,
+  theme,
+  setTheme
+}) {
   const navigate = useNavigate();
 
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [products, setProducts] = useState([]);
+  const [recentSearches, setRecentSearches] = useState(() =>
+    JSON.parse(
+      localStorage.getItem("shoppingWorldRecentSearches")
+    ) || []
+  );
+  const [showSearchPanel, setShowSearchPanel] = useState(false);
 
   const updateCartCount = () => {
     const cart =
@@ -314,6 +326,35 @@ function Navbar({ search = "", setSearch, user }) {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+  };
+
+  const saveSearch = (value) => {
+    const normalizedValue = value.trim();
+
+    if (!normalizedValue) {
+      return;
+    }
+
+    const updatedSearches = [
+      normalizedValue,
+      ...recentSearches.filter(
+        (item) => item.toLowerCase() !== normalizedValue.toLowerCase()
+      )
+    ].slice(0, 5);
+
+    setRecentSearches(updatedSearches);
+    localStorage.setItem(
+      "shoppingWorldRecentSearches",
+      JSON.stringify(updatedSearches)
+    );
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === "Enter") {
+      saveSearch(search);
+      setShowSearchPanel(false);
+      navigate(`/shop${searchText ? `?search=${encodeURIComponent(searchText)}` : ""}`);
+    }
   };
 
   const handleProfile = () => {
@@ -448,9 +489,11 @@ function Navbar({ search = "", setSearch, user }) {
             placeholder="Search Products..."
             value={search}
             onChange={handleSearchChange}
+            onFocus={() => setShowSearchPanel(true)}
+            onKeyDown={handleSearchKeyDown}
           />
 
-          {searchText && (
+          {searchText ? (
             <div className="suggestions">
 
               {suggestions.length > 0 ? (
@@ -476,6 +519,42 @@ function Navbar({ search = "", setSearch, user }) {
               )}
 
             </div>
+          ) : (
+            showSearchPanel && (
+              <div className="suggestions search-discovery-panel">
+                {recentSearches.length > 0 && (
+                  <>
+                    <div className="suggestion-heading">Recent searches</div>
+                    {recentSearches.map((item) => (
+                      <div
+                        key={item}
+                        className="suggestion-item"
+                        onMouseDown={() => {
+                          setSearch(item);
+                          saveSearch(item);
+                        }}
+                      >
+                        ↻ {item}
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                <div className="suggestion-heading">Popular searches</div>
+                {["smartphone", "shoes", "headphones"].map((item) => (
+                  <div
+                    key={item}
+                    className="suggestion-item"
+                    onMouseDown={() => {
+                      setSearch(item);
+                      saveSearch(item);
+                    }}
+                  >
+                    🔥 {item}
+                  </div>
+                ))}
+              </div>
+            )
           )}
 
         </div>
@@ -507,6 +586,18 @@ function Navbar({ search = "", setSearch, user }) {
           )}
 
         </button>
+
+        <label className="theme-switcher">
+          <span className="sr-only">Theme</span>
+          <select
+            value={theme}
+            aria-label="Choose theme"
+            onChange={(event) => setTheme(event.target.value)}
+          >
+            <option value="dark">☾ Dark</option>
+            <option value="light">☀ Light</option>
+          </select>
+        </label>
 
         {user ? (
 

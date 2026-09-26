@@ -187,13 +187,13 @@
     max-width: 400px;
     background: #0a0f18;
     border: 1px solid rgba(96, 165, 250, 0.25);
-    border-radius: 22px;
+    border-radius: 16px;
     padding: 32px 26px 26px;
     text-align: center;
     position: relative;
     box-shadow:
         0 25px 70px rgba(0, 0, 0, 0.65),
-        0 0 35px rgba(37, 99, 235, 0.12);
+        0 0 35px rgba(37, 99, 235, 0.16);
     animation: loginPopupShow 0.25s ease;
 }
 
@@ -225,7 +225,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(37, 99, 235, 0.12);
+    background: linear-gradient(145deg, rgba(37, 99, 235, 0.22), rgba(37, 99, 235, 0.06));
     border: 1px solid rgba(96, 165, 250, 0.2);
     font-size: 30px;
 }
@@ -244,6 +244,7 @@
 }
 
 .login-popup-button,
+.login-popup-signup,
 .login-popup-cancel {
     width: 100%;
     border: none;
@@ -256,7 +257,7 @@
 }
 
 .login-popup-button {
-    background: #2563eb;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #ffffff;
     margin-bottom: 10px;
 }
@@ -427,4 +428,21 @@
     .login-popup {
         padding: 28px 17px 20px;
     }
+}
+
+.login-popup-overlay {
+    background: rgba(2, 5, 10, 0.84);
+}
+
+.login-popup-signup {
+    margin-bottom: 10px;
+    border: 1px solid rgba(96, 165, 250, 0.24);
+    background: rgba(37, 99, 235, 0.1);
+    color: #93c5fd;
+}
+
+.login-popup-signup:hover {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: rgba(96, 165, 250, 0.45);
+    transform: translateY(-2px);
 }

@@ -2,10 +2,11 @@ import { useSearchParams } from "react-router-dom";
 import Products from "../components/Products";
 import "./Shop.css";
 
-function Shop() {
+function Shop({ search = "" }) {
   const [searchParams] = useSearchParams();
 
   const category = searchParams.get("category");
+  const querySearch = searchParams.get("search") || search;
 
   return (
     <section className="shop-page">
@@ -32,9 +33,11 @@ function Shop() {
 
 
       <Products
+        search={querySearch}
         category={category || ""}
         limit={null}
         title=""
+        showControls={true}
       />
 
     </section>

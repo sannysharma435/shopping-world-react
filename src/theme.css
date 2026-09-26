@@ -1,0 +1,397 @@
+:root {
+    --theme-page: #05070b;
+    --theme-surface: #0b111c;
+    --theme-surface-raised: #111827;
+    --theme-text: #f8fafc;
+    --theme-muted: #9ca8bb;
+    --theme-border: rgba(96, 165, 250, 0.16);
+    --theme-primary: #2563eb;
+    --theme-primary-hover: #1d4ed8;
+    --theme-accent: #60a5fa;
+    --theme-input: #111827;
+    --theme-modal: #0a0f18;
+    --theme-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] {
+    --theme-page: #f4f6f8;
+    --theme-surface: #ffffff;
+    --theme-surface-raised: #eef3f8;
+    --theme-text: #17202b;
+    --theme-muted: #5f6c7b;
+    --theme-border: rgba(37, 99, 235, 0.18);
+    --theme-primary: #2563eb;
+    --theme-primary-hover: #1d4ed8;
+    --theme-accent: #1d4ed8;
+    --theme-input: #ffffff;
+    --theme-modal: #ffffff;
+    --theme-shadow: 0 20px 55px rgba(31, 41, 55, 0.16);
+}
+
+html,
+body,
+#root,
+[data-theme="light"] body,
+[data-theme="light"] #root {
+    background: var(--theme-page) !important;
+    color: var(--theme-text) !important;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+    color: var(--theme-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--theme-text);
+}
+
+p {
+    color: var(--theme-muted);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid rgba(96, 165, 250, 0.45);
+    outline-offset: 2px;
+}
+
+.navbar,
+[data-theme="light"] .navbar {
+    background: color-mix(in srgb, var(--theme-page) 88%, transparent) !important;
+    border-bottom: 1px solid var(--theme-border) !important;
+    backdrop-filter: blur(16px);
+}
+
+.logo,
+.search-box input,
+.wishlist-nav-btn,
+.cart-nav-btn,
+.profile-btn,
+.right > a button,
+.theme-switcher select {
+    background: var(--theme-surface-raised) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+.menu > li > a {
+    color: var(--theme-muted) !important;
+}
+
+.menu > li > a:hover,
+[data-theme="light"] .menu > li > a:hover {
+    color: var(--theme-text) !important;
+}
+
+.theme-switcher {
+    display: inline-flex;
+    align-items: center;
+}
+
+.theme-switcher select {
+    min-height: 40px;
+    padding: 0 9px;
+    border: 1px solid var(--theme-border);
+    border-radius: 9px;
+    outline: none;
+    font-size: 11px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.home-page,
+.shop-page,
+.categories-page,
+.contact-page,
+.login-container,
+.signup-container,
+.forgot-container,
+.profile-container,
+.cart-page,
+.wishlist-page,
+.orders-page,
+.admin-login-page,
+.admin-page,
+.product-not-found,
+.products,
+.trending-products,
+.home-categories,
+.why-shopping-world {
+    background: var(--theme-page) !important;
+    color: var(--theme-text) !important;
+}
+
+.product-card,
+.categories-page .category-card,
+.wishlist-card,
+.cart-item,
+.cart-summary,
+.product-details,
+.product-reviews-section,
+.related-products-section,
+.recently-viewed-section,
+.customer-order-card,
+.orders-state,
+.stat-card,
+.order-card,
+.contact-box,
+.login-box,
+.signup-box,
+.forgot-box,
+.profile-box,
+.admin-login-card,
+.products-message,
+.products-toolbar {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+    box-shadow: var(--theme-shadow);
+}
+
+.product-info h3,
+.product-info h2,
+.categories-page .category-card h2,
+.wishlist-info h2,
+.wishlist-info h3,
+.cart-item-info h2,
+.cart-item-info h3,
+.details-info h1,
+.details-info h3,
+.details-price,
+.orders-page-header h1,
+.customer-order-product h2,
+.recently-viewed-card h3,
+.related-product-card h3 {
+    color: var(--theme-text) !important;
+}
+
+.product-info .delivery,
+.details-description,
+.details-delivery,
+.cart-summary,
+.wishlist-header p,
+.orders-page-header p,
+.customer-order-product p,
+.recently-viewed-card strong,
+.related-product-card strong {
+    color: var(--theme-muted) !important;
+}
+
+.image-box,
+.wishlist-image,
+.details-image,
+.related-product-card,
+.recently-viewed-card,
+.customer-order-product img {
+    background: var(--theme-surface-raised) !important;
+}
+
+input,
+textarea,
+select,
+.login-box input,
+.signup-box input,
+.forgot-box input,
+.contact-form input,
+.contact-form textarea,
+.cart-coupon input,
+.pincode-check input,
+.review-form select,
+.review-form textarea {
+    background: var(--theme-input) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--theme-muted) !important;
+}
+
+.cart-btn,
+.buy-btn,
+.details-cart,
+.details-buy,
+.checkout-btn,
+.empty-cart button,
+.empty-wishlist button,
+.wishlist-cart-btn,
+.contact-form button,
+.login-box button,
+.signup-box button,
+.forgot-box button,
+.admin-login-button,
+.delivery-continue,
+.pay-now-btn,
+.proceed-payment,
+.orders-shop-link,
+.orders-state a {
+    background: var(--theme-primary) !important;
+    color: #fff !important;
+}
+
+.cart-btn:hover,
+.buy-btn:hover,
+.details-cart:hover,
+.details-buy:hover,
+.checkout-btn:hover,
+.empty-cart button:hover,
+.empty-wishlist button:hover,
+.wishlist-cart-btn:hover,
+.contact-form button:hover,
+.login-box button:hover,
+.signup-box button:hover,
+.forgot-box button:hover,
+.admin-login-button:hover,
+.delivery-continue:hover,
+.pay-now-btn:hover,
+.proceed-payment:hover {
+    background: var(--theme-primary-hover) !important;
+}
+
+.buy-modal,
+.payment-modal,
+.delivery-modal,
+.confirmation-modal,
+.login-popup,
+.details-login-popup,
+.login-popup-overlay .login-popup {
+    background: var(--theme-modal) !important;
+    border-color: var(--theme-border) !important;
+    color: var(--theme-text) !important;
+    box-shadow: var(--theme-shadow);
+}
+
+.buy-modal h2,
+.buy-modal h3,
+.payment-modal h2,
+.payment-modal h3,
+.delivery-modal h2,
+.delivery-modal h3,
+.confirmation-modal h1,
+.confirmation-modal h3,
+.login-popup h2,
+.details-login-popup h2 {
+    color: var(--theme-text) !important;
+}
+
+.buy-product,
+.buy-benefits > div,
+.payment-product,
+.payment-method,
+.delivery-product,
+.confirmation-product,
+.confirmation-grid > div,
+.qr-payment-section,
+.details-login-icon,
+.login-popup-icon {
+    background: var(--theme-surface-raised) !important;
+    border-color: var(--theme-border) !important;
+}
+
+.footer,
+.footer-bottom {
+    background: var(--theme-page) !important;
+    color: var(--theme-text) !important;
+    border-color: var(--theme-border) !important;
+}
+
+.footer-section h3,
+.footer-brand h2,
+.footer-bottom p {
+    color: var(--theme-text) !important;
+}
+
+.footer-brand p,
+.footer-section p,
+.footer-section li,
+.footer-section a {
+    color: var(--theme-muted) !important;
+}
+
+.shopping-ai-window,
+.shopping-ai-header,
+.shopping-ai-messages,
+.shopping-ai-suggestions,
+.shopping-ai-input-area {
+    background: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+}
+
+.shopping-ai-messages {
+    background: var(--theme-page) !important;
+}
+
+.shopping-ai-input-area input,
+.shopping-ai-ai-message .shopping-ai-bubble,
+.shopping-ai-product {
+    background: var(--theme-surface-raised) !important;
+    color: var(--theme-text) !important;
+}
+
+.mega-sale {
+    background:
+        radial-gradient(circle at 86% 18%, rgba(37, 99, 235, 0.18), transparent 30%),
+        linear-gradient(135deg, #101927 0%, #08111c 62%, #0b1724 100%) !important;
+}
+
+[data-theme="light"] .mega-sale {
+    background:
+        radial-gradient(circle at 86% 18%, rgba(37, 99, 235, 0.14), transparent 30%),
+        linear-gradient(135deg, #e9f1ff 0%, #dbe8fb 62%, #cdddf5 100%) !important;
+}
+
+[data-theme="light"] .mega-sale .sale-content h2,
+[data-theme="light"] .mega-sale .sale-content p,
+[data-theme="light"] .mega-sale .sale-discount {
+    color: #17202b !important;
+}
+
+.login-popup-overlay,
+.payment-overlay,
+.buy-modal-overlay,
+.delivery-overlay,
+.confirmation-overlay {
+    background: rgba(0, 0, 0, 0.76) !important;
+}
+
+[data-theme="light"] .login-popup-overlay,
+[data-theme="light"] .payment-overlay,
+[data-theme="light"] .buy-modal-overlay,
+[data-theme="light"] .delivery-overlay,
+[data-theme="light"] .confirmation-overlay {
+    background: rgba(15, 23, 42, 0.42) !important;
+}
+
+@media (max-width: 650px) {
+    .theme-switcher {
+        order: 2;
+    }
+
+    .theme-switcher select {
+        min-height: 38px;
+        font-size: 10px;
+    }
+}

@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 import Toast from "./Toast";
 import BuyNowModal from "./BuyNowModal";
 
 function ProductCard({ image, name, price, rating }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+  const resumedAction = useRef(false);
 
   const [toast, setToast] = useState({
     show: false,
@@ -53,8 +56,12 @@ function ProductCard({ image, name, price, rating }) {
     return !!user;
   };
 
-  const requireLogin = () => {
+  const requireLogin = (actionType) => {
     if (!isUserLoggedIn()) {
+      setPendingAction({
+        type: actionType,
+        productName: name
+      });
       setShowLoginPopup(true);
       return false;
     }
@@ -74,7 +81,19 @@ function ProductCard({ image, name, price, rating }) {
     navigate("/login", {
       state: {
         from: window.location.pathname,
+        action: pendingAction,
         message: "Please login to continue shopping."
+      }
+    });
+  };
+
+  const goToSignup = () => {
+    setShowLoginPopup(false);
+
+    navigate("/signup", {
+      state: {
+        from: window.location.pathname,
+        action: pendingAction
       }
     });
   };
@@ -82,7 +101,7 @@ function ProductCard({ image, name, price, rating }) {
   const toggleWishlist = (e) => {
     e.stopPropagation();
 
-    if (!requireLogin()) {
+    if (!requireLogin("wishlist")) {
       return;
     }
 
@@ -140,7 +159,7 @@ function ProductCard({ image, name, price, rating }) {
   const addToCart = (e) => {
     e.stopPropagation();
 
-    if (!requireLogin()) {
+    if (!requireLogin("cart")) {
       return;
     }
 
@@ -183,7 +202,7 @@ function ProductCard({ image, name, price, rating }) {
   const openBuyNow = (e) => {
     e.stopPropagation();
 
-    if (!requireLogin()) {
+    if (!requireLogin("buy")) {
       return;
     }
 
@@ -193,6 +212,32 @@ function ProductCard({ image, name, price, rating }) {
   const closeBuyNow = () => {
     setShowBuyModal(false);
   };
+
+  useEffect(() => {
+    const action = location.state?.resumeAction;
+
+    if (
+      resumedAction.current ||
+      !action ||
+      action.productName !== name
+    ) {
+      return;
+    }
+
+    const resume = window.setTimeout(() => {
+      resumedAction.current = true;
+
+      if (action.type === "wishlist") {
+        toggleWishlist({ stopPropagation: () => {} });
+      } else if (action.type === "cart") {
+        addToCart({ stopPropagation: () => {} });
+      } else if (action.type === "buy") {
+        openBuyNow({ stopPropagation: () => {} });
+      }
+    }, 0);
+
+    return () => window.clearTimeout(resume);
+  }, [location.state, name]);
 
   const product = {
     image,
@@ -250,6 +295,13 @@ function ProductCard({ image, name, price, rating }) {
               onClick={goToLogin}
             >
               Login Now
+            </button>
+
+            <button
+              className="login-popup-signup"
+              onClick={goToSignup}
+            >
+              Create Account
             </button>
 
             <button

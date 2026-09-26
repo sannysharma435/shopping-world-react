@@ -129,6 +129,25 @@
     font-weight: 700;
 }
 
+.move-wishlist-btn {
+    display: block;
+    min-height: 32px;
+    margin-top: 12px;
+    padding: 0 10px;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 7px;
+    background: rgba(37, 99, 235, 0.08);
+    color: #93c5fd;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.move-wishlist-btn:hover {
+    background: rgba(37, 99, 235, 0.18);
+    border-color: rgba(96, 165, 250, 0.4);
+}
+
 .remove-btn {
     position: absolute;
     top: 15px;
@@ -334,4 +353,59 @@
     .cart-page {
         padding: 100px 12px 28px;
     }
+}
+
+.cart-coupon {
+    margin: 4px 0 18px;
+    padding: 13px;
+    border: 1px solid rgba(96, 165, 250, 0.14);
+    border-radius: 10px;
+    background: rgba(37, 99, 235, 0.04);
+}
+
+.cart-coupon label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.cart-coupon > div {
+    display: flex;
+    gap: 7px;
+}
+
+.cart-coupon input {
+    min-width: 0;
+    flex: 1;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    outline: none;
+    background: #111827;
+    color: #f8fafc;
+}
+
+.cart-coupon button {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 7px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cart-coupon small {
+    display: block;
+    margin-top: 8px;
+    color: #7f8ba1;
+    font-size: 10px;
+}
+
+.discount-row strong {
+    color: #4ade80;
 }

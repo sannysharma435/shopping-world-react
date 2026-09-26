@@ -241,11 +241,17 @@ function Products({
   category = "",
   limit = null,
   title = "Featured Products",
-  randomize = false
+  randomize = false,
+  showControls = false
 }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
+  const [minRating, setMinRating] = useState("all");
+  const [availability, setAvailability] = useState("all");
+  const [brand, setBrand] = useState("all");
+  const [maxPrice, setMaxPrice] = useState("all");
 
   const navigate = useNavigate();
 
@@ -333,6 +339,68 @@ function Products({
     }
   );
 
+  const brands = [
+    ...new Set(
+      products
+        .map((item) => item.brand)
+        .filter(Boolean)
+    )
+  ].sort();
+
+  filteredProducts = filteredProducts.filter((item) => {
+    const numericPrice = Number(item.price) || 0;
+    const numericRating = Number(item.rating) || 0;
+    const productAvailability = String(
+      item.availability || ""
+    ).toLowerCase();
+
+    if (
+      minRating !== "all" &&
+      numericRating < Number(minRating)
+    ) {
+      return false;
+    }
+
+    if (
+      availability !== "all" &&
+      !productAvailability.includes(
+        availability.toLowerCase()
+      )
+    ) {
+      return false;
+    }
+
+    if (brand !== "all" && item.brand !== brand) {
+      return false;
+    }
+
+    if (
+      maxPrice !== "all" &&
+      numericPrice > Number(maxPrice)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  if (sortBy === "price-low") {
+    filteredProducts.sort(
+      (first, second) =>
+        Number(first.price) - Number(second.price)
+    );
+  } else if (sortBy === "price-high") {
+    filteredProducts.sort(
+      (first, second) =>
+        Number(second.price) - Number(first.price)
+    );
+  } else if (sortBy === "rating") {
+    filteredProducts.sort(
+      (first, second) =>
+        Number(second.rating) - Number(first.rating)
+    );
+  }
+
   if (limit !== null && Number(limit) > 0) {
     if (randomize && !search) {
       filteredProducts = shuffleProducts(
@@ -355,6 +423,79 @@ function Products({
   return (
     <section className="products">
       {title && <h2>{title}</h2>}
+
+      {!loading && !error && showControls && (
+        <div className="products-toolbar">
+          <div className="products-result-count">
+            <strong>{filteredProducts.length}</strong> results
+          </div>
+
+          <div className="products-filters">
+            <label>
+              Sort
+              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+                <option value="relevance">Relevance</option>
+                <option value="rating">Top rated</option>
+                <option value="price-low">Price: low to high</option>
+                <option value="price-high">Price: high to low</option>
+              </select>
+            </label>
+
+            <label>
+              Rating
+              <select value={minRating} onChange={(event) => setMinRating(event.target.value)}>
+                <option value="all">All ratings</option>
+                <option value="4">4+ stars</option>
+                <option value="4.5">4.5+ stars</option>
+              </select>
+            </label>
+
+            <label>
+              Availability
+              <select value={availability} onChange={(event) => setAvailability(event.target.value)}>
+                <option value="all">Any status</option>
+                <option value="stock">In stock</option>
+              </select>
+            </label>
+
+            <label>
+              Brand
+              <select value={brand} onChange={(event) => setBrand(event.target.value)}>
+                <option value="all">All brands</option>
+                {brands.map((itemBrand) => (
+                  <option key={itemBrand} value={itemBrand}>
+                    {itemBrand}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label>
+              Max price
+              <select value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)}>
+                <option value="all">Any price</option>
+                <option value="1000">Under ₹1,000</option>
+                <option value="5000">Under ₹5,000</option>
+                <option value="20000">Under ₹20,000</option>
+              </select>
+            </label>
+
+            <button
+              className="clear-filters"
+              type="button"
+              onClick={() => {
+                setSortBy("relevance");
+                setMinRating("all");
+                setAvailability("all");
+                setBrand("all");
+                setMaxPrice("all");
+              }}
+            >
+              Clear filters
+            </button>
+          </div>
+        </div>
+      )}
 
       {loading && (
         <div className="products-message">

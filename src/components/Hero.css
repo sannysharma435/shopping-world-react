@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     min-height: 570px;
-    padding: 80px 7%;
+    padding: 110px 7% 80px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
     width: 700px;
     height: 700px;
     right: -80px;
-    top: -100px;
+    top: 20px;
     border-radius: 50%;
     background: rgba(0, 91, 190, 0.09);
     filter: blur(120px);
@@ -92,6 +92,8 @@
     z-index: 2;
     width: 50%;
     min-height: 470px;
+    padding-top: 70px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,6 +103,7 @@
     position: relative;
     width: 430px;
     height: 430px;
+    flex-shrink: 0;
     border-radius: 50%;
     background:
         radial-gradient(
@@ -168,7 +171,7 @@
 @media (max-width: 1000px) {
     .hero {
         min-height: 520px;
-        padding: 70px 5%;
+        padding: 100px 5% 70px;
     }
 
     .hero-left {
@@ -177,6 +180,7 @@
 
     .hero-right {
         width: 45%;
+        padding-top: 55px;
     }
 
     .hero-circle {
@@ -216,6 +220,7 @@
         width: 100%;
         min-height: 350px;
         margin-top: 10px;
+        padding-top: 25px;
     }
 
     .hero-circle {
@@ -257,6 +262,7 @@
     .hero-right {
         min-height: 270px;
         margin-top: 5px;
+        padding-top: 20px;
     }
 
     .hero-circle {
@@ -284,6 +290,7 @@
 
     .hero-right {
         min-height: 240px;
+        padding-top: 15px;
     }
 
     .hero-circle {

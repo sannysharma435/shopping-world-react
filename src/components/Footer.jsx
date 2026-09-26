@@ -20,19 +20,29 @@ function Footer() {
           <div className="social-icons">
 
             <a href="#" aria-label="Facebook">
-              f
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 8h3V4h-3c-3.31 0-5 1.69-5 5v3H6v4h3v8h4v-8h3.2l.8-4H13V9c0-.67.33-1 1-1Z" />
+              </svg>
             </a>
 
             <a href="#" aria-label="Instagram">
-              ◎
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" className="social-dot" />
+              </svg>
             </a>
 
             <a href="#" aria-label="Twitter">
-              𝕏
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 4h4.1l3.2 4.5L16 4h3l-5.3 6.1L20 20h-4.1l-3.7-5.1L7.5 20h-3l5.7-6.7L5 4Zm3.2 2 7.9 12h.7L8.9 6h-.7Z" />
+              </svg>
             </a>
 
             <a href="#" aria-label="YouTube">
-              ▶
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5a2.8 2.8 0 0 0-2 2C2 9 2 12 2 12s0 3 .4 4.8a2.8 2.8 0 0 0 2 2c1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5a2.8 2.8 0 0 0 2-2C22 15 22 12 22 12s0-3-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z" />
+              </svg>
             </a>
 
           </div>

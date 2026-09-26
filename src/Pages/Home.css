@@ -306,15 +306,19 @@
     position: relative;
     margin: 30px 6% 100px;
     min-height: 330px;
-    padding: 55px;
-    border-radius: 30px;
+    padding: clamp(38px, 5vw, 62px);
+    border-radius: 18px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #08111c;
-    border: 1px solid rgba(0, 153, 255, 0.18);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    background:
+        radial-gradient(circle at 86% 18%, rgba(37, 99, 235, 0.18), transparent 30%),
+        linear-gradient(135deg, #101927 0%, #08111c 62%, #0b1724 100%);
+    border: 1px solid rgba(96, 165, 250, 0.22);
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.42),
+        0 0 35px rgba(37, 99, 235, 0.08);
 }
 
 .mega-sale::before {
@@ -345,7 +349,7 @@
 .sale-content h2 {
     margin: 10px 0;
     color: #ffffff;
-    font-size: clamp(40px, 5vw, 65px);
+    font-size: clamp(40px, 5vw, 68px);
     font-weight: 850;
     letter-spacing: -2px;
 }
@@ -378,8 +382,8 @@
     align-items: center;
     gap: 10px;
     padding: 13px 21px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #006eff, #00a8ff);
+    border-radius: 7px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #ffffff;
     font-size: 13px;
     font-weight: 700;
@@ -398,7 +402,7 @@
     z-index: 2;
     font-size: 130px;
     opacity: 0.9;
-    filter: drop-shadow(0 0 30px rgba(0, 123, 255, 0.25));
+    filter: drop-shadow(0 0 30px rgba(37, 99, 235, 0.32));
     transform: rotate(-8deg);
 }
 
@@ -912,7 +916,7 @@
         margin: 10px 18px 65px;
         padding: 38px 22px;
         min-height: auto;
-        border-radius: 22px;
+        border-radius: 16px;
     }
 
     .sale-content {

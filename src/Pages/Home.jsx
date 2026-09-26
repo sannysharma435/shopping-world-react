@@ -4,6 +4,7 @@ import "./Home.css";
 import Hero from "../components/Hero";
 import Products from "../components/Products";
 import Footer from "../components/Footer";
+import RecentlyViewed from "../components/RecentlyViewed";
 import { categories } from "../data/categories";
 
 function Home({ search = "" }) {
@@ -270,6 +271,8 @@ function Home({ search = "" }) {
         </div>
 
       </section>
+
+      <RecentlyViewed />
 
       <section className="home-newsletter">
 

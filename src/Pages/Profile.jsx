@@ -58,6 +58,27 @@ function Profile({ user, setUser }) {
 
         <div className="profile-buttons">
 
+          <button
+            className="edit-profile"
+            onClick={() => navigate("/orders")}
+          >
+            📦 My Orders
+          </button>
+
+          <button
+            className="edit-profile"
+            onClick={() => navigate("/wishlist")}
+          >
+            ♡ Wishlist
+          </button>
+
+          <button
+            className="edit-profile"
+            onClick={() => navigate("/cart")}
+          >
+            🛒 Cart
+          </button>
+
           <button className="edit-profile">
             ✏️ Edit Profile
           </button>

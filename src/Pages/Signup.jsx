@@ -1,10 +1,11 @@
 import "./Signup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Signup() {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Form ki values
   const [name, setName] = useState("");
@@ -53,7 +54,13 @@ function Signup() {
         setMessage("✅ Account created successfully!");
 
         setTimeout(() => {
-          navigate("/login");
+          navigate("/login", {
+            state: {
+              from: location.state?.from,
+              action: location.state?.action,
+              message: "Account created. Please login to continue."
+            }
+          });
         }, 1000);
 
       } else {

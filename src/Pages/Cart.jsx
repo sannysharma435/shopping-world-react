@@ -7,6 +7,9 @@ function Cart() {
   const navigate = useNavigate();
 
   const [cart, setCart] = useState([]);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [couponMessage, setCouponMessage] = useState("");
 
   const [toast, setToast] = useState({
     show: false,
@@ -113,6 +116,43 @@ function Cart() {
     );
   };
 
+  const moveToWishlist = (index) => {
+    const product = cart[index];
+    const wishlist = JSON.parse(
+      localStorage.getItem("shoppingWorldWishlist")
+    ) || [];
+
+    if (!wishlist.some((item) => item.name === product.name)) {
+      wishlist.push({
+        image: product.image,
+        name: product.name,
+        price: product.price,
+        rating: product.rating
+      });
+
+      localStorage.setItem(
+        "shoppingWorldWishlist",
+        JSON.stringify(wishlist)
+      );
+      window.dispatchEvent(new Event("wishlistUpdated"));
+    }
+
+    removeProduct(index);
+    showToast(`${product.name} moved to wishlist`, "wishlist");
+  };
+
+  const applyCoupon = () => {
+    const normalizedCoupon = couponCode.trim().toUpperCase();
+
+    if (normalizedCoupon === "SHOP10") {
+      setAppliedCoupon(normalizedCoupon);
+      setCouponMessage("Coupon applied: 10% off");
+    } else {
+      setAppliedCoupon("");
+      setCouponMessage("Try the available SHOP10 offer.");
+    }
+  };
+
   const getPrice = (price) => {
     return (
       Number(
@@ -130,8 +170,11 @@ function Cart() {
   );
 
   const delivery = subtotal > 0 ? 0 : 0;
+  const discount = appliedCoupon
+    ? Math.round(subtotal * 0.1)
+    : 0;
 
-  const total = subtotal + delivery;
+  const total = subtotal + delivery - discount;
 
   return (
     <>
@@ -246,6 +289,13 @@ function Cart() {
 
                     </div>
 
+                    <button
+                      className="move-wishlist-btn"
+                      onClick={() => moveToWishlist(index)}
+                    >
+                      ♡ Move to Wishlist
+                    </button>
+
                   </div>
 
                   <button
@@ -280,6 +330,36 @@ function Cart() {
                   )}
                 </strong>
               </div>
+
+              <div className="cart-coupon">
+                <label htmlFor="cart-coupon-code">
+                  Have a coupon?
+                </label>
+                <div>
+                  <input
+                    id="cart-coupon-code"
+                    value={couponCode}
+                    placeholder="Enter code"
+                    onChange={(event) => {
+                      setCouponCode(event.target.value);
+                      setCouponMessage("");
+                    }}
+                  />
+                  <button type="button" onClick={applyCoupon}>
+                    Apply
+                  </button>
+                </div>
+                <small>
+                  {couponMessage || "Available offer: SHOP10"}
+                </small>
+              </div>
+
+              {discount > 0 && (
+                <div className="summary-row discount-row">
+                  <span>Coupon discount</span>
+                  <strong>-₹{discount.toLocaleString("en-IN")}</strong>
+                </div>
+              )}
 
               <div className="summary-row">
                 <span>
