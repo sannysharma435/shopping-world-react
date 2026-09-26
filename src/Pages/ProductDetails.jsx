@@ -123,6 +123,166 @@ function ProductDetails() {
     }, [product]);
 
     useEffect(() => {
+        if (!product) {
+            return;
+        }
+
+        const getAvailability = (value) => {
+            const normalized = String(value || "")
+                .trim()
+                .toLowerCase();
+
+            if (
+                normalized.includes("out") &&
+                normalized.includes("stock")
+            ) {
+                return "https://schema.org/OutOfStock";
+            }
+
+            if (
+                normalized.includes("pre")
+            ) {
+                return "https://schema.org/PreOrder";
+            }
+
+            if (
+                normalized.includes("back")
+            ) {
+                return "https://schema.org/BackOrder";
+            }
+
+            return "https://schema.org/InStock";
+        };
+
+        const productUrl =
+            `${window.location.origin}${location.pathname}`;
+
+        const productSchema = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description:
+                product.description ||
+                "Product available at Shopping World.",
+            image: product.image
+                ? [product.image]
+                : [],
+            productID: String(product.id),
+            category: product.category || undefined,
+            brand: product.brand
+                ? {
+                      "@type": "Brand",
+                      name: product.brand
+                  }
+                : undefined,
+            offers: {
+                "@type": "Offer",
+                url: productUrl,
+                priceCurrency: "INR",
+                price: Number(product.price || 0).toFixed(2),
+                availability: getAvailability(
+                    product.availability
+                ),
+                itemCondition:
+                    "https://schema.org/NewCondition"
+            }
+        };
+
+        if (
+            Number(product.rating || 0) > 0 &&
+            Number(product.reviews || 0) > 0
+        ) {
+            productSchema.aggregateRating = {
+                "@type": "AggregateRating",
+                ratingValue: Number(product.rating),
+                reviewCount: Number(product.reviews)
+            };
+        }
+
+        const breadcrumbSchema = {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: window.location.origin
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Shop",
+                    item: `${window.location.origin}/shop`
+                },
+                {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: product.name,
+                    item: productUrl
+                }
+            ]
+        };
+
+        const productScript = document.createElement("script");
+        productScript.type = "application/ld+json";
+        productScript.id = "shopping-world-product-schema";
+        productScript.textContent = JSON.stringify(
+            productSchema
+        );
+
+        const breadcrumbScript =
+            document.createElement("script");
+
+        breadcrumbScript.type = "application/ld+json";
+        breadcrumbScript.id =
+            "shopping-world-breadcrumb-schema";
+        breadcrumbScript.textContent =
+            JSON.stringify(breadcrumbSchema);
+
+        const oldProductScript =
+            document.getElementById(
+                "shopping-world-product-schema"
+            );
+
+        const oldBreadcrumbScript =
+            document.getElementById(
+                "shopping-world-breadcrumb-schema"
+            );
+
+        if (oldProductScript) {
+            oldProductScript.remove();
+        }
+
+        if (oldBreadcrumbScript) {
+            oldBreadcrumbScript.remove();
+        }
+
+        document.head.appendChild(productScript);
+        document.head.appendChild(breadcrumbScript);
+
+        return () => {
+            const currentProductScript =
+                document.getElementById(
+                    "shopping-world-product-schema"
+                );
+
+            const currentBreadcrumbScript =
+                document.getElementById(
+                    "shopping-world-breadcrumb-schema"
+                );
+
+            if (currentProductScript) {
+                currentProductScript.remove();
+            }
+
+            if (currentBreadcrumbScript) {
+                currentBreadcrumbScript.remove();
+            }
+        };
+    }, [product, location.pathname]);
+
+    useEffect(() => {
         const action = location.state?.resumeAction;
 
         if (
@@ -172,7 +332,8 @@ function ProductDetails() {
                 state: {
                     from: location.pathname,
                     action: "cart",
-                    message: "Please login to add products to your cart."
+                    message:
+                        "Please login to add products to your cart."
                 }
             });
             return;
@@ -188,7 +349,7 @@ function ProductDetails() {
         );
 
         if (existingProduct) {
-                existingProduct.quantity += quantity;
+            existingProduct.quantity += quantity;
         } else {
             cart.push({
                 id: product.id,
@@ -226,7 +387,8 @@ function ProductDetails() {
                 state: {
                     from: location.pathname,
                     action: "buy",
-                    message: "Please login to continue to checkout."
+                    message:
+                        "Please login to continue to checkout."
                 }
             });
             return;
@@ -248,7 +410,8 @@ function ProductDetails() {
             navigate("/login", {
                 state: {
                     from: window.location.pathname,
-                    message: "Please login to save products to your wishlist."
+                    message:
+                        "Please login to save products to your wishlist."
                 }
             });
             return;
@@ -263,7 +426,9 @@ function ProductDetails() {
         );
 
         const updatedWishlist = exists
-            ? wishlist.filter((item) => item.name !== product.name)
+            ? wishlist.filter(
+                  (item) => item.name !== product.name
+              )
             : [
                   ...wishlist,
                   {
@@ -278,8 +443,13 @@ function ProductDetails() {
             "shoppingWorldWishlist",
             JSON.stringify(updatedWishlist)
         );
-        window.dispatchEvent(new Event("wishlistUpdated"));
+
+        window.dispatchEvent(
+            new Event("wishlistUpdated")
+        );
+
         setIsWishlisted(!exists);
+
         showToast(
             exists
                 ? `${product.name} removed from wishlist`
@@ -290,11 +460,15 @@ function ProductDetails() {
 
     const checkPincode = () => {
         if (!/^[0-9]{6}$/.test(pincode)) {
-            setPincodeMessage("Enter a valid 6-digit pincode.");
+            setPincodeMessage(
+                "Enter a valid 6-digit pincode."
+            );
             return;
         }
 
-        setPincodeMessage("Delivery available to this location.");
+        setPincodeMessage(
+            "Delivery available to this location."
+        );
     };
 
     const shareProduct = async () => {
@@ -308,12 +482,21 @@ function ProductDetails() {
             if (navigator.share) {
                 await navigator.share(shareData);
             } else {
-                await navigator.clipboard.writeText(window.location.href);
-                showToast("Product link copied", "success");
+                await navigator.clipboard.writeText(
+                    window.location.href
+                );
+
+                showToast(
+                    "Product link copied",
+                    "success"
+                );
             }
         } catch (error) {
             if (error.name !== "AbortError") {
-                showToast("Unable to share this product", "error");
+                showToast(
+                    "Unable to share this product",
+                    "error"
+                );
             }
         }
     };
@@ -329,7 +512,9 @@ function ProductDetails() {
             {
                 rating: reviewRating,
                 text: reviewText.trim(),
-                date: new Date().toLocaleDateString("en-IN"),
+                date: new Date().toLocaleDateString(
+                    "en-IN"
+                ),
                 helpful: 0
             },
             ...reviews
@@ -337,21 +522,32 @@ function ProductDetails() {
 
         setReviews(nextReviews);
         setReviewText("");
+
         localStorage.setItem(
             `shoppingWorldReviews:${product.name}`,
             JSON.stringify(nextReviews)
         );
-        showToast("Review added", "success");
+
+        showToast(
+            "Review added",
+            "success"
+        );
     };
 
     const markReviewHelpful = (index) => {
-        const nextReviews = reviews.map((review, reviewIndex) =>
-            reviewIndex === index
-                ? { ...review, helpful: (review.helpful || 0) + 1 }
-                : review
+        const nextReviews = reviews.map(
+            (review, reviewIndex) =>
+                reviewIndex === index
+                    ? {
+                          ...review,
+                          helpful:
+                              (review.helpful || 0) + 1
+                      }
+                    : review
         );
 
         setReviews(nextReviews);
+
         localStorage.setItem(
             `shoppingWorldReviews:${product.name}`,
             JSON.stringify(nextReviews)
@@ -372,7 +568,9 @@ function ProductDetails() {
                 <h1>Product Not Found 😔</h1>
 
                 <Link to="/shop">
-                    <button>Go Back to Shop</button>
+                    <button>
+                        Go Back to Shop
+                    </button>
                 </Link>
             </div>
         );
@@ -406,13 +604,17 @@ function ProductDetails() {
                     <img
                         src={product.image}
                         alt={product.name}
-                        onClick={() => setIsZoomed(true)}
+                        onClick={() =>
+                            setIsZoomed(true)
+                        }
                     />
 
                     <button
                         className="image-zoom-button"
                         type="button"
-                        onClick={() => setIsZoomed(true)}
+                        onClick={() =>
+                            setIsZoomed(true)
+                        }
                     >
                         ⌕ View larger
                     </button>
@@ -425,7 +627,9 @@ function ProductDetails() {
                         {product.category}
                     </p>
 
-                    <h1>{product.name}</h1>
+                    <h1>
+                        {product.name}
+                    </h1>
 
                     <div className="details-rating">
                         ⭐ {product.rating}
@@ -441,11 +645,16 @@ function ProductDetails() {
                     <h2 className="details-price">
                         ₹
                         {typeof product.price === "number"
-                            ? product.price.toLocaleString("en-IN")
-                            : Number(product.price || 0).toLocaleString("en-IN")}
+                            ? product.price.toLocaleString(
+                                  "en-IN"
+                              )
+                            : Number(
+                                  product.price || 0
+                              ).toLocaleString("en-IN")}
                     </h2>
 
                     <div className="product-action-row">
+
                         <button
                             className={
                                 isWishlisted
@@ -455,7 +664,9 @@ function ProductDetails() {
                             type="button"
                             onClick={toggleWishlist}
                         >
-                            {isWishlisted ? "♥ Saved" : "♡ Wishlist"}
+                            {isWishlisted
+                                ? "♥ Saved"
+                                : "♡ Wishlist"}
                         </button>
 
                         <button
@@ -465,6 +676,7 @@ function ProductDetails() {
                         >
                             ↗ Share
                         </button>
+
                     </div>
 
                     {product.delivery && (
@@ -474,11 +686,13 @@ function ProductDetails() {
                     )}
 
                     <div className="pincode-check">
+
                         <label htmlFor="product-pincode">
                             Check delivery availability
                         </label>
 
                         <div>
+
                             <input
                                 id="product-pincode"
                                 inputMode="numeric"
@@ -486,13 +700,20 @@ function ProductDetails() {
                                 placeholder="Enter pincode"
                                 value={pincode}
                                 onChange={(event) => {
-                                    setPincode(event.target.value);
+                                    setPincode(
+                                        event.target.value
+                                    );
                                     setPincodeMessage("");
                                 }}
                             />
-                            <button type="button" onClick={checkPincode}>
+
+                            <button
+                                type="button"
+                                onClick={checkPincode}
+                            >
                                 Check
                             </button>
+
                         </div>
 
                         {pincodeMessage && (
@@ -500,11 +721,14 @@ function ProductDetails() {
                                 {pincodeMessage}
                             </p>
                         )}
+
                     </div>
 
                     <hr />
 
-                    <h3>Product Description</h3>
+                    <h3>
+                        Product Description
+                    </h3>
 
                     <p className="details-description">
                         {product.description ||
@@ -515,26 +739,43 @@ function ProductDetails() {
 
                         {product.brand && (
                             <div>
-                                <strong>Brand</strong>
-                                <span>{product.brand}</span>
+                                <strong>
+                                    Brand
+                                </strong>
+
+                                <span>
+                                    {product.brand}
+                                </span>
                             </div>
                         )}
 
                         {product.color && (
                             <div>
-                                <strong>Color</strong>
-                                <span>{product.color}</span>
+                                <strong>
+                                    Color
+                                </strong>
+
+                                <span>
+                                    {product.color}
+                                </span>
                             </div>
                         )}
 
                         <div>
-                            <strong>Category</strong>
-                            <span>{product.category}</span>
+                            <strong>
+                                Category
+                            </strong>
+
+                            <span>
+                                {product.category}
+                            </span>
                         </div>
 
                         {product.availability && (
                             <div>
-                                <strong>Availability</strong>
+                                <strong>
+                                    Availability
+                                </strong>
 
                                 <span className="stock">
                                     ● {product.availability}
@@ -547,26 +788,42 @@ function ProductDetails() {
                     <div className="details-buttons">
 
                         <div className="detail-quantity">
-                            <span>Quantity</span>
+
+                            <span>
+                                Quantity
+                            </span>
+
                             <button
                                 type="button"
                                 onClick={() =>
-                                    setQuantity((current) =>
-                                        Math.max(1, current - 1)
+                                    setQuantity(
+                                        (current) =>
+                                            Math.max(
+                                                1,
+                                                current - 1
+                                            )
                                     )
                                 }
                             >
                                 −
                             </button>
-                            <strong>{quantity}</strong>
+
+                            <strong>
+                                {quantity}
+                            </strong>
+
                             <button
                                 type="button"
                                 onClick={() =>
-                                    setQuantity((current) => current + 1)
+                                    setQuantity(
+                                        (current) =>
+                                            current + 1
+                                    )
                                 }
                             >
                                 +
                             </button>
+
                         </div>
 
                         <button
@@ -590,81 +847,197 @@ function ProductDetails() {
             </div>
 
             <section className="product-reviews-section">
+
                 <div className="reviews-summary">
+
                     <div>
-                        <span className="details-category">CUSTOMER REVIEWS</span>
-                        <h2>How shoppers feel</h2>
+                        <span className="details-category">
+                            CUSTOMER REVIEWS
+                        </span>
+
+                        <h2>
+                            How shoppers feel
+                        </h2>
                     </div>
-                    <strong>⭐ {product.rating}</strong>
+
+                    <strong>
+                        ⭐ {product.rating}
+                    </strong>
+
                 </div>
 
-                <form className="review-form" onSubmit={submitReview}>
-                    <label htmlFor="review-rating">Your rating</label>
+                <form
+                    className="review-form"
+                    onSubmit={submitReview}
+                >
+
+                    <label htmlFor="review-rating">
+                        Your rating
+                    </label>
+
                     <select
                         id="review-rating"
                         value={reviewRating}
                         onChange={(event) =>
-                            setReviewRating(Number(event.target.value))
+                            setReviewRating(
+                                Number(
+                                    event.target.value
+                                )
+                            )
                         }
                     >
-                        <option value="5">5 stars</option>
-                        <option value="4">4 stars</option>
-                        <option value="3">3 stars</option>
-                        <option value="2">2 stars</option>
-                        <option value="1">1 star</option>
+                        <option value="5">
+                            5 stars
+                        </option>
+
+                        <option value="4">
+                            4 stars
+                        </option>
+
+                        <option value="3">
+                            3 stars
+                        </option>
+
+                        <option value="2">
+                            2 stars
+                        </option>
+
+                        <option value="1">
+                            1 star
+                        </option>
                     </select>
+
                     <textarea
                         placeholder="Share your experience with this product"
                         value={reviewText}
-                        onChange={(event) => setReviewText(event.target.value)}
+                        onChange={(event) =>
+                            setReviewText(
+                                event.target.value
+                            )
+                        }
                         rows="3"
                     />
-                    <button type="submit">Add review</button>
+
+                    <button type="submit">
+                        Add review
+                    </button>
+
                 </form>
 
                 <div className="review-list">
+
                     {reviews.length > 0 ? (
-                        reviews.map((review, index) => (
-                            <article className="review-card" key={`${review.date}-${index}`}>
-                                <div className="review-card-top">
-                                    <strong>{"★".repeat(review.rating)}</strong>
-                                    <span>{review.date}</span>
-                                </div>
-                                <p>{review.text}</p>
-                                <button type="button" onClick={() => markReviewHelpful(index)}>
-                                    Helpful ({review.helpful || 0})
-                                </button>
-                            </article>
-                        ))
+                        reviews.map(
+                            (review, index) => (
+                                <article
+                                    className="review-card"
+                                    key={`${review.date}-${index}`}
+                                >
+
+                                    <div className="review-card-top">
+
+                                        <strong>
+                                            {"★".repeat(
+                                                review.rating
+                                            )}
+                                        </strong>
+
+                                        <span>
+                                            {review.date}
+                                        </span>
+
+                                    </div>
+
+                                    <p>
+                                        {review.text}
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            markReviewHelpful(
+                                                index
+                                            )
+                                        }
+                                    >
+                                        Helpful (
+                                        {review.helpful ||
+                                            0}
+                                        )
+                                    </button>
+
+                                </article>
+                            )
+                        )
                     ) : (
-                        <p className="reviews-empty">Be the first to review this product.</p>
+                        <p className="reviews-empty">
+                            Be the first to review this product.
+                        </p>
                     )}
+
                 </div>
+
             </section>
 
             {relatedProducts.length > 0 && (
                 <section className="related-products-section">
+
                     <div className="related-heading">
-                        <span className="details-category">YOU MAY ALSO LIKE</span>
-                        <h2>Related products</h2>
+
+                        <span className="details-category">
+                            YOU MAY ALSO LIKE
+                        </span>
+
+                        <h2>
+                            Related products
+                        </h2>
+
                     </div>
 
                     <div className="related-product-grid">
-                        {relatedProducts.map((item) => (
-                            <Link
-                                key={item.id}
-                                className="related-product-card"
-                                to={`/product/${encodeURIComponent(item.name)}`}
-                            >
-                                <img src={item.image} alt={item.name} />
-                                <div>
-                                    <h3>{item.name}</h3>
-                                    <span>⭐ {item.rating}</span>
-                                    <strong>₹{Number(item.price).toLocaleString("en-IN")}</strong>
-                                </div>
-                            </Link>
-                        ))}
+
+                        {relatedProducts.map(
+                            (item) => (
+                                <Link
+                                    key={item.id}
+                                    className="related-product-card"
+                                    to={`/product/${encodeURIComponent(
+                                        item.name
+                                    )}`}
+                                >
+
+                                    <img
+                                        src={item.image}
+                                        alt={item.name}
+                                    />
+
+                                    <div>
+
+                                        <h3>
+                                            {item.name}
+                                        </h3>
+
+                                        <span>
+                                            ⭐ {item.rating}
+                                        </span>
+
+                                        <strong>
+                                            ₹
+                                            {Number(
+                                                item.price
+                                            ).toLocaleString(
+                                                "en-IN"
+                                            )}
+                                        </strong>
+
+                                    </div>
+
+                                </Link>
+                            )
+                        )}
+
                     </div>
+
                 </section>
             )}
 
@@ -673,9 +1046,14 @@ function ProductDetails() {
                     className="image-zoom-overlay"
                     type="button"
                     aria-label="Close enlarged product image"
-                    onClick={() => setIsZoomed(false)}
+                    onClick={() =>
+                        setIsZoomed(false)
+                    }
                 >
-                    <img src={product.image} alt={product.name} />
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                    />
                 </button>
             )}
         </>
