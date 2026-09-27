@@ -1020,7 +1020,11 @@ def get_website_knowledge(topic="general"):
                 "wishlist": website_knowledge["wishlist"]
             }
 
-        if "login" in normalized_topic or "signup" in normalized_topic or "account" in normalized_topic:
+        if (
+            "login" in normalized_topic
+            or "signup" in normalized_topic
+            or "account" in normalized_topic
+        ):
             return {
                 "account": website_knowledge["account"]
             }
@@ -1206,13 +1210,25 @@ def search_shopping_products(
         if query_text and score == 0:
             continue
 
-        if not query_text and not category_text and max_price_value <= 0 and min_rating_value <= 0:
+        if (
+            not query_text
+            and not category_text
+            and max_price_value <= 0
+            and min_rating_value <= 0
+        ):
             score = rating
 
-        if "best" in query_text or "top" in query_text or "rated" in query_text:
+        if (
+            "best" in query_text
+            or "top" in query_text
+            or "rated" in query_text
+        ):
             score += rating * 3
 
-        if "cheap" in query_text or "budget" in query_text:
+        if (
+            "cheap" in query_text
+            or "budget" in query_text
+        ):
             score += max(
                 0,
                 5000 - price
@@ -1299,6 +1315,7 @@ def retry_generate_content(
                 raise
 
             wait_time = 2 ** attempt
+
             print(
                 f"GEMINI RETRY {attempt + 1}/{attempts} "
                 f"WAITING {wait_time}s"
@@ -1435,7 +1452,7 @@ def ai_chat():
         system_prompt = """
 You are Shopping World AI, the intelligent virtual shopping assistant for Shopping World.
 
-You are connected to a real e-commerce website.
+You are directly connected to the Shopping World application and its current product catalog.
 
 Your responsibilities are:
 
@@ -1450,7 +1467,7 @@ Your responsibilities are:
 9. When a product request is made, use the search_products tool.
 10. When a Shopping World website question is asked, use the website_information tool when useful.
 11. If the user asks a general question unrelated to Shopping World, answer normally.
-12. If the user asks for current or recent information, use available current web grounding when available.
+12. If the user asks for current or recent information, use Google Search when useful.
 13. Reply in the same language or style used by the user.
 14. Hinglish users should receive natural Hinglish replies.
 15. Keep answers useful and conversational.
@@ -1463,6 +1480,9 @@ Shopping World website:
 Name: Shopping World
 
 Type: E-commerce shopping website.
+
+Purpose:
+Shopping World is an online shopping website where users can browse products, view product details, add products to cart or wishlist, place orders and manage their account.
 
 Main categories:
 Fashion & Clothing
@@ -1499,12 +1519,31 @@ Shopping AI
 Shopping flow:
 Users browse or search products, open product details, add products to cart or wishlist, login or create an account when required, enter delivery information, choose an available payment method, place an order and track the order.
 
+Cart:
+Users can add products to the cart, increase or decrease quantities and continue to checkout.
+
+Wishlist:
+Users can save products to their wishlist and access them later.
+
+Account:
+Users can create an account with name, email, phone and password, login using email and password and use the forgot-password flow.
+
+Orders:
+Orders contain customer information, delivery address, product information, payment information, delivery date, time slot and order status.
+
+Delivery:
+Products currently displayed by the Shopping World catalog use the Free Delivery label.
+
+Support:
+Users can use the Contact page for support or website-related communication.
+
+Shopping World AI:
+Shopping World AI helps users understand the website, search products, compare products, get recommendations and answer general questions.
+
 Important:
 The product catalog is dynamic. Never rely on memory for product facts. Use the search_products tool for product questions.
 
 The Shopping World website information is authoritative for Shopping World features.
-
-You can answer general questions outside shopping normally.
 
 If the user asks for a product recommendation, use the actual catalog and explain why the selected products fit.
 
@@ -1589,8 +1628,7 @@ The user should feel like they are talking to a smart shopping assistant, not a 
         config = types.GenerateContentConfig(
             system_instruction=system_prompt,
             tools=tools,
-            max_output_tokens=1200,
-            temperature=0.6
+            max_output_tokens=1200
         )
 
         response = retry_generate_content(
@@ -1598,6 +1636,95 @@ The user should feel like they are talking to a smart shopping assistant, not a 
             contents=contents,
             config=config
         )
+
+        function_calls = []
+
+        if response.candidates:
+            candidate = response.candidates[0]
+
+            if candidate.content:
+                for part in candidate.content.parts:
+                    if getattr(part, "function_call", None):
+                        function_calls.append(
+                            part.function_call
+                        )
+
+        if function_calls:
+            contents.append(
+                response.candidates[0].content
+            )
+
+            function_response_parts = []
+
+            for function_call in function_calls:
+                function_name = function_call.name
+                function_args = dict(
+                    function_call.args or {}
+                )
+
+                if function_name == "search_products":
+                    result = search_products(
+                        query=function_args.get(
+                            "query",
+                            ""
+                        ),
+                        max_price=function_args.get(
+                            "max_price",
+                            0
+                        ),
+                        category=function_args.get(
+                            "category",
+                            ""
+                        ),
+                        min_rating=function_args.get(
+                            "min_rating",
+                            0
+                        ),
+                        limit=function_args.get(
+                            "limit",
+                            6
+                        )
+                    )
+
+                elif function_name == "website_information":
+                    result = website_information(
+                        topic=function_args.get(
+                            "topic",
+                            "general"
+                        )
+                    )
+
+                else:
+                    result = {
+                        "error": "Unknown function"
+                    }
+
+                function_response_parts.append(
+                    types.Part(
+                        function_response=types.FunctionResponse(
+                            name=function_name,
+                            response=result,
+                            id=getattr(
+                                function_call,
+                                "id",
+                                None
+                            )
+                        )
+                    )
+                )
+
+            contents.append(
+                types.Content(
+                    role="user",
+                    parts=function_response_parts
+                )
+            )
+
+            response = retry_generate_content(
+                client=client,
+                contents=contents,
+                config=config
+            )
 
         answer = (
             response.text
