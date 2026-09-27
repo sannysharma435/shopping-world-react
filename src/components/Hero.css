@@ -298,3 +298,33 @@
         height: 215px;
     }
 }
+
+    [data-theme="light"] .hero {
+    background: #f5f8fc;
+    color: #111827;
+}
+
+[data-theme="light"] .hero::before {
+    background: rgba(37, 99, 235, 0.08);
+}
+
+[data-theme="light"] .hero-left h1,
+[data-theme="light"] .hero-left h2,
+[data-theme="light"] .hero-left h3 {
+    color: #111827;
+}
+
+[data-theme="light"] .hero-left p {
+    color: #64748b;
+}
+
+[data-theme="light"] .hero-circle {
+    background:
+        radial-gradient(
+            circle,
+            rgba(37, 99, 235, 0.12),
+            rgba(37, 99, 235, 0.04) 45%,
+            transparent 70%
+        );
+    border-color: rgba(37, 99, 235, 0.12);
+}
