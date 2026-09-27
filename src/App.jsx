@@ -25,8 +25,9 @@ import Orders from "./Pages/Orders";
 
 import AdminLogin from "./Pages/AdminLogin";
 import AdminOrders from "./Pages/AdminOrders";
+import AdminDashboard from "./Pages/AdminDashboard";
 
-function AdminProtectedRoute() {
+function AdminProtectedRoute({ children }) {
   const isAdmin =
     localStorage.getItem("shoppingWorldAdmin") === "true";
 
@@ -34,7 +35,7 @@ function AdminProtectedRoute() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return <AdminOrders />;
+  return children;
 }
 
 function ProtectedRoute({ user, children }) {
@@ -47,6 +48,7 @@ function ProtectedRoute({ user, children }) {
 
 function App() {
   const [search, setSearch] = useState("");
+
   const [theme, setTheme] = useState(() =>
     localStorage.getItem("shoppingWorldTheme") || "dark"
   );
@@ -65,9 +67,21 @@ function App() {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  useEffect(() => {
+    const handleThemeChange = (event) => {
+      if (event.detail === "dark" || event.detail === "light") {
+        setTheme(event.detail);
+      }
+    };
+
+    window.addEventListener("shoppingWorldThemeChange", handleThemeChange);
+    return () => {
+      window.removeEventListener("shoppingWorldThemeChange", handleThemeChange);
+    };
+  }, []);
+
   return (
     <BrowserRouter>
-
       <Navbar
         search={search}
         setSearch={setSearch}
@@ -77,12 +91,9 @@ function App() {
       />
 
       <Routes>
-
         <Route
           path="/"
-          element={
-            <Home search={search} />
-          }
+          element={<Home search={search} />}
         />
 
         <Route
@@ -165,19 +176,30 @@ function App() {
         />
 
         <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
+
+        <Route
           path="/admin/orders"
-          element={<AdminProtectedRoute />}
+          element={
+            <AdminProtectedRoute>
+              <AdminOrders />
+            </AdminProtectedRoute>
+          }
         />
 
         <Route
           path="*"
           element={<Navigate to="/" replace />}
         />
-
       </Routes>
 
       <ShoppingAI />
-
     </BrowserRouter>
   );
 }

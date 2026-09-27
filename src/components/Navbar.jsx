@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
 import { categories } from "../data/categories";
@@ -210,6 +210,13 @@ function Navbar({
   setTheme
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+  const isAdmin = localStorage.getItem("shoppingWorldAdmin") === "true";
+
+  if (isAdminPage && isAdmin) {
+    return null;
+  }
 
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -220,7 +227,6 @@ function Navbar({
     ) || []
   );
   const [showSearchPanel, setShowSearchPanel] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const updateCartCount = () => {
     const cart =
@@ -319,8 +325,6 @@ function Navbar({
 
   const openProduct = (productName) => {
     setSearch("");
-    setShowSearchPanel(false);
-    setMobileMenuOpen(false);
 
     navigate(
       `/product/${encodeURIComponent(productName)}`
@@ -341,14 +345,11 @@ function Navbar({
     const updatedSearches = [
       normalizedValue,
       ...recentSearches.filter(
-        (item) =>
-          item.toLowerCase() !==
-          normalizedValue.toLowerCase()
+        (item) => item.toLowerCase() !== normalizedValue.toLowerCase()
       )
     ].slice(0, 5);
 
     setRecentSearches(updatedSearches);
-
     localStorage.setItem(
       "shoppingWorldRecentSearches",
       JSON.stringify(updatedSearches)
@@ -359,50 +360,29 @@ function Navbar({
     if (event.key === "Enter") {
       saveSearch(search);
       setShowSearchPanel(false);
-      setMobileMenuOpen(false);
-
-      navigate(
-        `/shop${
-          searchText
-            ? `?search=${encodeURIComponent(searchText)}`
-            : ""
-        }`
-      );
+      navigate(`/shop${searchText ? `?search=${encodeURIComponent(searchText)}` : ""}`);
     }
   };
 
   const handleProfile = () => {
-    setMobileMenuOpen(false);
     navigate("/profile");
   };
 
   const openCart = () => {
-    setMobileMenuOpen(false);
     navigate("/cart");
   };
 
   const openWishlist = () => {
-    setMobileMenuOpen(false);
     navigate("/wishlist");
   };
 
   const openCategory = (category) => {
-    setMobileMenuOpen(false);
-
     navigate(
       `/shop?category=${encodeURIComponent(
         category
       )}`
     );
   };
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-
-  const mobileSearchSuggestions = searchText
-    ? suggestions
-    : [];
 
   return (
     <nav className="navbar">
@@ -549,15 +529,10 @@ function Navbar({
           ) : (
             showSearchPanel && (
               <div className="suggestions search-discovery-panel">
-
                 {recentSearches.length > 0 && (
                   <>
-                    <div className="suggestion-heading">
-                      Recent searches
-                    </div>
-
+                    <div className="suggestion-heading">Recent searches</div>
                     {recentSearches.map((item) => (
-
                       <div
                         key={item}
                         className="suggestion-item"
@@ -568,22 +543,12 @@ function Navbar({
                       >
                         ↻ {item}
                       </div>
-
                     ))}
-
                   </>
                 )}
 
-                <div className="suggestion-heading">
-                  Popular searches
-                </div>
-
-                {[
-                  "smartphone",
-                  "shoes",
-                  "headphones"
-                ].map((item) => (
-
+                <div className="suggestion-heading">Popular searches</div>
+                {["smartphone", "shoes", "headphones"].map((item) => (
                   <div
                     key={item}
                     className="suggestion-item"
@@ -594,9 +559,7 @@ function Navbar({
                   >
                     🔥 {item}
                   </div>
-
                 ))}
-
               </div>
             )
           )}
@@ -632,24 +595,14 @@ function Navbar({
         </button>
 
         <label className="theme-switcher">
-          <span className="sr-only">
-            Theme
-          </span>
-
+          <span className="sr-only">Theme</span>
           <select
             value={theme}
             aria-label="Choose theme"
-            onChange={(event) =>
-              setTheme(event.target.value)
-            }
+            onChange={(event) => setTheme(event.target.value)}
           >
-            <option value="dark">
-              ☾ Dark
-            </option>
-
-            <option value="light">
-              ☀ Light
-            </option>
+            <option value="dark">☾ Dark</option>
+            <option value="light">☀ Light</option>
           </select>
         </label>
 
@@ -669,256 +622,6 @@ function Navbar({
               👤 Login
             </button>
           </Link>
-
-        )}
-
-      </div>
-
-      <div className="mobile-navbar">
-
-        <div className="mobile-navbar-top">
-
-          <Link
-            to="/"
-            className="mobile-logo"
-            onClick={closeMobileMenu}
-          >
-            Shopping <span>World</span>
-          </Link>
-
-          <div className="mobile-search-box">
-
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onFocus={() => setShowSearchPanel(true)}
-              onKeyDown={handleSearchKeyDown}
-            />
-
-            {searchText ? (
-
-              <div className="suggestions">
-
-                {mobileSearchSuggestions.length > 0 ? (
-
-                  mobileSearchSuggestions.map((item) => (
-
-                    <div
-                      key={item.id}
-                      className="suggestion-item"
-                      onClick={() =>
-                        openProduct(item.name)
-                      }
-                    >
-                      🔍 {item.name}
-                    </div>
-
-                  ))
-
-                ) : (
-
-                  <div className="suggestion-item not-found">
-                    ❌ No Products Found
-                  </div>
-
-                )}
-
-              </div>
-
-            ) : (
-
-              showSearchPanel && (
-                <div className="suggestions search-discovery-panel">
-
-                  {recentSearches.length > 0 && (
-                    <>
-                      <div className="suggestion-heading">
-                        Recent searches
-                      </div>
-
-                      {recentSearches.map((item) => (
-
-                        <div
-                          key={item}
-                          className="suggestion-item"
-                          onMouseDown={() => {
-                            setSearch(item);
-                            saveSearch(item);
-                          }}
-                        >
-                          ↻ {item}
-                        </div>
-
-                      ))}
-
-                    </>
-                  )}
-
-                  <div className="suggestion-heading">
-                    Popular searches
-                  </div>
-
-                  {[
-                    "smartphone",
-                    "shoes",
-                    "headphones"
-                  ].map((item) => (
-
-                    <div
-                      key={item}
-                      className="suggestion-item"
-                      onMouseDown={() => {
-                        setSearch(item);
-                        saveSearch(item);
-                      }}
-                    >
-                      🔥 {item}
-                    </div>
-
-                  ))}
-
-                </div>
-              )
-
-            )}
-
-          </div>
-
-          <button
-            className="mobile-menu-button"
-            type="button"
-            aria-label="Open menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() =>
-              setMobileMenuOpen(
-                (previous) => !previous
-              )
-            }
-          >
-            ⋮
-          </button>
-
-        </div>
-
-        <div className="mobile-navbar-actions">
-
-          <button
-            className="mobile-action"
-            type="button"
-            onClick={openWishlist}
-          >
-            ❤️ Wishlist
-
-            {wishlistCount > 0 && (
-              <span className="wishlist-count">
-                {wishlistCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            className="mobile-action"
-            type="button"
-            onClick={openCart}
-          >
-            🛒 Cart
-
-            {cartCount > 0 && (
-              <span className="cart-count">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          {user ? (
-
-            <button
-              className="mobile-action"
-              type="button"
-              onClick={handleProfile}
-            >
-              👤 Profile
-            </button>
-
-          ) : (
-
-            <Link
-              to="/login"
-              className="mobile-action"
-              onClick={closeMobileMenu}
-            >
-              👤 Login
-            </Link>
-
-          )}
-
-        </div>
-
-        {mobileMenuOpen && (
-
-          <div className="mobile-menu-panel">
-
-            <Link
-              to="/"
-              className="mobile-menu-item"
-              onClick={closeMobileMenu}
-            >
-              🏠 Home
-            </Link>
-
-            <Link
-              to="/shop"
-              className="mobile-menu-item"
-              onClick={closeMobileMenu}
-            >
-              🛍️ Shop
-            </Link>
-
-            <Link
-              to="/categories"
-              className="mobile-menu-item"
-              onClick={closeMobileMenu}
-            >
-              📦 Categories
-            </Link>
-
-            <Link
-              to="/contact"
-              className="mobile-menu-item"
-              onClick={closeMobileMenu}
-            >
-              📞 Contact
-            </Link>
-
-            <div className="mobile-theme-row">
-
-              <span>
-                Theme
-              </span>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setTheme("dark")
-                }
-              >
-                ☾ Dark
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setTheme("light")
-                }
-              >
-                ☀ Light
-              </button>
-
-            </div>
-
-          </div>
 
         )}
 

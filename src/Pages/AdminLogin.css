@@ -1,9 +1,9 @@
 .admin-login-page {
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 25px;
+    padding: 145px 25px 40px;
     box-sizing: border-box;
     background: #05070b;
     position: relative;
@@ -27,9 +27,9 @@
 .admin-login-card {
     position: relative;
     z-index: 1;
-    width: 100%;
+    width: min(100%, 420px);
     max-width: 420px;
-    padding: 40px;
+    padding: 32px;
     box-sizing: border-box;
     background: #05070b;
     border: 1px solid rgba(37, 99, 235, 0.25);
@@ -167,13 +167,29 @@
     color: #fff;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 750px) {
     .admin-login-page {
-        padding: 15px;
+        padding: 125px 15px 30px;
     }
 
     .admin-login-card {
         padding: 30px 22px;
+    }
+
+    .admin-login-card h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 500px) {
+    .admin-login-page {
+        padding: 110px 15px 25px;
+    }
+
+    .admin-login-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 28px 22px;
     }
 
     .admin-login-card h1 {
