@@ -138,20 +138,24 @@ function ShoppingAI() {
                 );
             }
 
-            const answer =
+            const products =
+                Array.isArray(data.products)
+                    ? data.products
+                    : [];
+
+            const answer = cleanAIResponse(
                 data.reply ||
                 data.message ||
-                "Sorry, I couldn't generate a response.";
+                "Sorry, I couldn't generate a response.",
+                products
+            );
 
             setMessages((previous) => [
                 ...previous,
                 {
                     type: "ai",
                     text: answer,
-                    products:
-                        Array.isArray(data.products)
-                            ? data.products
-                            : []
+                    products
                 }
             ]);
         } catch (error) {
@@ -170,6 +174,41 @@ function ShoppingAI() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const cleanAIResponse = (answer, products = []) => {
+        if (!answer) return "Here are some products you may like. 🛍️";
+
+        if (!Array.isArray(products) || products.length === 0) {
+            return answer;
+        }
+
+        const productNames = products
+            .map((product) => product?.name)
+            .filter(Boolean)
+            .sort((a, b) => b.length - a.length);
+
+        let cleaned = answer;
+
+        for (const name of productNames) {
+            const index = cleaned.toLowerCase().indexOf(name.toLowerCase());
+
+            if (index !== -1) {
+                cleaned = cleaned.slice(0, index).trim();
+                break;
+            }
+        }
+
+        cleaned = cleaned
+            .replace(/(^|\n)#{1,6}\s*$/g, "")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
+
+        if (!cleaned || cleaned.length < 8) {
+            return "Sure! Here are some products you may like. 👇";
+        }
+
+        return cleaned;
     };
 
     const handleSuggestion = (text) => {
