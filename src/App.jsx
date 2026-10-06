@@ -70,7 +70,10 @@ function App() {
 
   useEffect(() => {
     const handleThemeChange = (event) => {
-      if (event.detail === "dark" || event.detail === "light") {
+      if (
+        event.detail === "dark" ||
+        event.detail === "light"
+      ) {
         setTheme(event.detail);
       }
     };
