@@ -1429,7 +1429,7 @@ def call_dify_chat(message, history, catalog_context):
     payload = {
         "inputs": {},
         "query": "\n".join(prompt_parts),
-        "response_mode": "blocking",
+        "response_mode": "streaming",
         "user": "shopping-world-web"
     }
 
@@ -1453,8 +1453,85 @@ def call_dify_chat(message, history, catalog_context):
     )
 
     try:
-        with urlopen(http_request, timeout=60) as response:
-            raw_response = response.read().decode("utf-8")
+        with urlopen(http_request, timeout=90) as response:
+            answer_parts = []
+            error_events = []
+
+            for raw_line in response:
+                line = raw_line.decode(
+                    "utf-8",
+                    errors="replace"
+                ).strip()
+
+                if not line or not line.startswith("data:"):
+                    continue
+
+                data_text = line[5:].strip()
+
+                if not data_text or data_text == "[DONE]":
+                    continue
+
+                try:
+                    event = json.loads(data_text)
+                except Exception:
+                    print(
+                        "DIFY NON-JSON SSE DATA:",
+                        data_text[:2000]
+                    )
+                    continue
+
+                event_type = event.get("event", "")
+
+                if event_type in [
+                    "message",
+                    "agent_message"
+                ]:
+                    chunk = event.get("answer", "")
+
+                    if chunk:
+                        answer_parts.append(
+                            str(chunk)
+                        )
+
+                elif event_type == "error":
+                    error_events.append(event)
+
+                elif event_type == "message_end":
+                    message_id = event.get(
+                        "message_id"
+                    )
+
+                    if message_id:
+                        print(
+                            "DIFY MESSAGE ID:",
+                            message_id
+                        )
+
+            if error_events:
+                print(
+                    "DIFY STREAM ERROR:",
+                    json.dumps(
+                        error_events,
+                        ensure_ascii=False
+                    )[:5000]
+                )
+
+                first_error = error_events[0]
+
+                raise RuntimeError(
+                    "Dify API error: "
+                    + str(
+                        first_error.get(
+                            "message",
+                            first_error
+                        )
+                    )
+                )
+
+            answer = "".join(
+                answer_parts
+            ).strip()
+
     except Exception as error:
         if hasattr(error, "read"):
             try:
@@ -1462,6 +1539,7 @@ def call_dify_chat(message, history, catalog_context):
                     "utf-8",
                     errors="replace"
                 )
+
                 print(
                     "DIFY HTTP ERROR BODY:",
                     error_body[:5000]
@@ -1478,49 +1556,9 @@ def call_dify_chat(message, history, catalog_context):
         )
         raise
 
-    try:
-        response_data = json.loads(raw_response)
-    except Exception:
-        print(
-            "DIFY INVALID JSON RESPONSE:",
-            raw_response[:5000]
-        )
-        raise RuntimeError(
-            "Dify returned an invalid JSON response"
-        )
-
-    if response_data.get("code") and response_data.get("code") != 200:
-        print(
-            "DIFY API ERROR RESPONSE:",
-            json.dumps(
-                response_data,
-                ensure_ascii=False
-            )[:5000]
-        )
-        raise RuntimeError(
-            "Dify API error: "
-            + str(
-                response_data.get(
-                    "message",
-                    response_data.get("code")
-                )
-            )
-        )
-
-    answer = str(
-        response_data.get("answer", "")
-    ).strip()
-
     if not answer:
-        print(
-            "DIFY EMPTY RESPONSE:",
-            json.dumps(
-                response_data,
-                ensure_ascii=False
-            )[:5000]
-        )
         raise RuntimeError(
-            "Dify returned an empty response"
+            "Dify returned an empty streaming response"
         )
 
     return answer
