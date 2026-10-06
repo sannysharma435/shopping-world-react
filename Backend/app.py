@@ -4,8 +4,6 @@ import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import re
-from google import genai
-from google.genai import types
 from urllib.request import Request, urlopen
 import json
 import time
@@ -1294,34 +1292,24 @@ def extract_max_price(message):
                 return float(match.group(1))
             except Exception:
                 pass
-
     return 0
 
 
 def detect_category(message):
     text = str(message or "").lower()
-
     aliases = {
-        "phone": "smartphones",
-        "phones": "smartphones",
-        "mobile": "smartphones",
-        "mobiles": "smartphones",
-        "laptop": "laptops",
-        "laptops": "laptops",
-        "shoe": "shoes",
-        "shoes": "shoes",
-        "watch": "watches",
-        "watches": "watches",
-        "bike": "motorcycle",
-        "bikes": "motorcycle",
-        "motorcycle": "motorcycle",
-        "motorcycles": "motorcycle"
+        "phone": "smartphones", "phones": "smartphones",
+        "mobile": "smartphones", "mobiles": "smartphones",
+        "laptop": "laptops", "laptops": "laptops",
+        "shoe": "shoes", "shoes": "shoes",
+        "watch": "watches", "watches": "watches",
+        "bike": "motorcycle", "bikes": "motorcycle",
+        "motorcycle": "motorcycle", "motorcycles": "motorcycle"
     }
 
     for word, category in aliases.items():
         if re.search(r"\b" + re.escape(word) + r"\b", text):
             return category
-
     return ""
 
 
@@ -1367,7 +1355,7 @@ def call_dify_chat(message, history, catalog_context):
     api_key = os.getenv("DIFY_API_KEY")
 
     if not api_key:
-        raise RuntimeError("Dify API key is not configured")
+        raise RuntimeError("DIFY_API_KEY is not configured")
 
     dify_url = os.getenv(
         "DIFY_API_URL",
@@ -1392,19 +1380,17 @@ def call_dify_chat(message, history, catalog_context):
 
             content = content.strip()
 
-            if not content:
-                continue
-
-            history_context.append(
-                f"{role.upper()}: {content[:3000]}"
-            )
+            if content:
+                history_context.append(
+                    f"{role.upper()}: {content[:3000]}"
+                )
 
     prompt_parts = [
         "You are Shopping World AI, the intelligent shopping assistant for Shopping World.",
         "",
         "Rules:",
         "- Reply naturally and conversationally.",
-        "- Reply in the same language/style as the user.",
+        "- Reply in the same language or style used by the user.",
         "- If the user uses Hinglish, reply in natural Hinglish.",
         "- Never invent Shopping World product names, prices, ratings, brands, availability, discounts or specifications.",
         "- Use only the current catalog context supplied below for product facts.",
@@ -1422,10 +1408,10 @@ def call_dify_chat(message, history, catalog_context):
         "Current product catalog context:"
     ]
 
-    if catalog_context:
-        prompt_parts.append(catalog_context)
-    else:
-        prompt_parts.append("No matching catalog products were found for this request.")
+    prompt_parts.append(
+        catalog_context if catalog_context
+        else "No matching catalog products were found for this request."
+    )
 
     if history_context:
         prompt_parts.extend([
@@ -1449,7 +1435,7 @@ def call_dify_chat(message, history, catalog_context):
 
     body = json.dumps(payload).encode("utf-8")
 
-    request = Request(
+    http_request = Request(
         dify_url,
         data=body,
         headers={
@@ -1460,9 +1446,59 @@ def call_dify_chat(message, history, catalog_context):
         method="POST"
     )
 
-    with urlopen(request, timeout=60) as response:
-        response_data = json.loads(
-            response.read().decode("utf-8")
+    try:
+        with urlopen(http_request, timeout=60) as response:
+            raw_response = response.read().decode("utf-8")
+    except Exception as error:
+        if hasattr(error, "read"):
+            try:
+                error_body = error.read().decode(
+                    "utf-8",
+                    errors="replace"
+                )
+                print(
+                    "DIFY HTTP ERROR BODY:",
+                    error_body[:5000]
+                )
+            except Exception as read_error:
+                print(
+                    "DIFY ERROR BODY READ FAILED:",
+                    repr(read_error)
+                )
+
+        print(
+            "DIFY REQUEST ERROR:",
+            repr(error)
+        )
+        raise
+
+    try:
+        response_data = json.loads(raw_response)
+    except Exception:
+        print(
+            "DIFY INVALID JSON RESPONSE:",
+            raw_response[:5000]
+        )
+        raise RuntimeError(
+            "Dify returned an invalid JSON response"
+        )
+
+    if response_data.get("code") and response_data.get("code") != 200:
+        print(
+            "DIFY API ERROR RESPONSE:",
+            json.dumps(
+                response_data,
+                ensure_ascii=False
+            )[:5000]
+        )
+        raise RuntimeError(
+            "Dify API error: "
+            + str(
+                response_data.get(
+                    "message",
+                    response_data.get("code")
+                )
+            )
         )
 
     answer = str(
@@ -1470,6 +1506,13 @@ def call_dify_chat(message, history, catalog_context):
     ).strip()
 
     if not answer:
+        print(
+            "DIFY EMPTY RESPONSE:",
+            json.dumps(
+                response_data,
+                ensure_ascii=False
+            )[:5000]
+        )
         raise RuntimeError(
             "Dify returned an empty response"
         )
@@ -1523,7 +1566,7 @@ def ai_chat():
     except Exception as error:
         print(
             "DIFY AI CHAT ERROR:",
-            error
+            repr(error)
         )
 
         return {
