@@ -22,6 +22,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import Cart from "./Pages/Cart";
 import Wishlist from "./Pages/Wishlist";
 import Orders from "./Pages/Orders";
+import ShoppingAIPage from "./Pages/ShoppingAIPage";
 
 import AdminLogin from "./Pages/AdminLogin";
 import AdminOrders from "./Pages/AdminOrders";
@@ -74,9 +75,16 @@ function App() {
       }
     };
 
-    window.addEventListener("shoppingWorldThemeChange", handleThemeChange);
+    window.addEventListener(
+      "shoppingWorldThemeChange",
+      handleThemeChange
+    );
+
     return () => {
-      window.removeEventListener("shoppingWorldThemeChange", handleThemeChange);
+      window.removeEventListener(
+        "shoppingWorldThemeChange",
+        handleThemeChange
+      );
     };
   }, []);
 
@@ -168,6 +176,11 @@ function App() {
               <Orders />
             </ProtectedRoute>
           }
+        />
+
+        <Route
+          path="/shopping-ai"
+          element={<ShoppingAIPage />}
         />
 
         <Route
