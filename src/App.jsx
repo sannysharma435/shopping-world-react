@@ -4,7 +4,8 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate
+  Navigate,
+  useLocation
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -47,59 +48,30 @@ function ProtectedRoute({ user, children }) {
   return children;
 }
 
-function App() {
-  const [search, setSearch] = useState("");
+function AppContent({
+  search,
+  setSearch,
+  user,
+  setUser,
+  theme,
+  setTheme
+}) {
+  const location = useLocation();
 
-  const [theme, setTheme] = useState(() =>
-    localStorage.getItem("shoppingWorldTheme") || "dark"
-  );
-
-  const [user, setUser] = useState(() => {
-    const savedUser =
-      localStorage.getItem("shoppingWorldUser");
-
-    return savedUser
-      ? JSON.parse(savedUser)
-      : null;
-  });
-
-  useEffect(() => {
-    localStorage.setItem("shoppingWorldTheme", theme);
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-
-  useEffect(() => {
-    const handleThemeChange = (event) => {
-      if (
-        event.detail === "dark" ||
-        event.detail === "light"
-      ) {
-        setTheme(event.detail);
-      }
-    };
-
-    window.addEventListener(
-      "shoppingWorldThemeChange",
-      handleThemeChange
-    );
-
-    return () => {
-      window.removeEventListener(
-        "shoppingWorldThemeChange",
-        handleThemeChange
-      );
-    };
-  }, []);
+  const isShoppingAI =
+    location.pathname === "/shopping-ai";
 
   return (
-    <BrowserRouter>
-      <Navbar
-        search={search}
-        setSearch={setSearch}
-        user={user}
-        theme={theme}
-        setTheme={setTheme}
-      />
+    <>
+      {!isShoppingAI && (
+        <Navbar
+          search={search}
+          setSearch={setSearch}
+          user={user}
+          theme={theme}
+          setTheme={setTheme}
+        />
+      )}
 
       <Routes>
         <Route
@@ -183,7 +155,11 @@ function App() {
 
         <Route
           path="/shopping-ai"
-          element={<ShoppingAIPage />}
+          element={
+            <ProtectedRoute user={user}>
+              <ShoppingAIPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -215,7 +191,70 @@ function App() {
         />
       </Routes>
 
-      <ShoppingAI />
+      {!isShoppingAI && <ShoppingAI />}
+    </>
+  );
+}
+
+function App() {
+  const [search, setSearch] = useState("");
+
+  const [theme, setTheme] = useState(() =>
+    localStorage.getItem("shoppingWorldTheme") || "dark"
+  );
+
+  const [user, setUser] = useState(() => {
+    const savedUser =
+      localStorage.getItem("shoppingWorldUser");
+
+    return savedUser
+      ? JSON.parse(savedUser)
+      : null;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "shoppingWorldTheme",
+      theme
+    );
+
+    document.documentElement.dataset.theme =
+      theme;
+  }, [theme]);
+
+  useEffect(() => {
+    const handleThemeChange = (event) => {
+      if (
+        event.detail === "dark" ||
+        event.detail === "light"
+      ) {
+        setTheme(event.detail);
+      }
+    };
+
+    window.addEventListener(
+      "shoppingWorldThemeChange",
+      handleThemeChange
+    );
+
+    return () => {
+      window.removeEventListener(
+        "shoppingWorldThemeChange",
+        handleThemeChange
+      );
+    };
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <AppContent
+        search={search}
+        setSearch={setSearch}
+        user={user}
+        setUser={setUser}
+        theme={theme}
+        setTheme={setTheme}
+      />
     </BrowserRouter>
   );
 }
