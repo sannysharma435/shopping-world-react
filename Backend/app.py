@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, Response, request, stream_with_context
 from flask_cors import CORS
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -1437,7 +1437,7 @@ def call_dify_chat(message, history, catalog_context):
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            "Accept": "text/event-stream",
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -1448,116 +1448,94 @@ def call_dify_chat(message, history, catalog_context):
         method="POST"
     )
 
-    try:
-        with urlopen(http_request, timeout=45) as response:
-            answer_parts = []
-            error_events = []
+    def decode_event(event_lines):
+        event_name = ""
+        data_lines = []
 
-            for raw_line in response:
-                line = raw_line.decode(
-                    "utf-8",
-                    errors="replace"
-                ).strip()
+        for event_line in event_lines:
+            if not event_line or event_line.startswith(":"):
+                continue
 
-                if not line or not line.startswith("data:"):
-                    continue
+            field, separator, value = event_line.partition(":")
 
-                data_text = line[5:].strip()
+            if not separator:
+                value = ""
+            elif value.startswith(" "):
+                value = value[1:]
 
-                if not data_text or data_text == "[DONE]":
-                    continue
+            if field == "event":
+                event_name = value
+            elif field == "data":
+                data_lines.append(value)
 
-                try:
-                    event = json.loads(data_text)
-                except Exception:
-                    print(
-                        "DIFY NON-JSON SSE DATA:",
-                        data_text[:2000]
-                    )
-                    continue
+        if not data_lines:
+            return None, None
 
-                event_type = event.get("event", "")
+        data_text = "\n".join(data_lines)
 
-                if event_type in [
-                    "message",
-                    "agent_message"
-                ]:
-                    chunk = event.get("answer", "")
+        if data_text == "[DONE]":
+            return event_name, None
 
-                    if chunk:
-                        answer_parts.append(
-                            str(chunk)
-                        )
+        try:
+            event = json.loads(data_text)
+        except json.JSONDecodeError:
+            print("DIFY STREAM CONTAINED A MALFORMED EVENT")
+            return None, None
 
-                elif event_type == "error":
-                    error_events.append(event)
+        if not isinstance(event, dict):
+            print("DIFY STREAM CONTAINED AN INVALID EVENT")
+            return None, None
 
-                elif event_type == "message_end":
-                    message_id = event.get(
-                        "message_id"
-                    )
+        return event_name or event.get("event", ""), event
 
-                    if message_id:
-                        print(
-                            "DIFY MESSAGE ID:",
-                            message_id
-                        )
+    answer_received = False
+    event_lines = []
 
-            if error_events:
-                print(
-                    "DIFY STREAM ERROR:",
-                    json.dumps(
-                        error_events,
-                        ensure_ascii=False
-                    )[:5000]
-                )
+    with urlopen(http_request, timeout=45) as response:
+        for raw_line in response:
+            line = raw_line.decode(
+                "utf-8",
+                errors="replace"
+            ).rstrip("\r\n")
 
-                first_error = error_events[0]
+            if line:
+                event_lines.append(line)
+                continue
 
-                raise RuntimeError(
-                    "Dify API error: "
-                    + str(
-                        first_error.get(
-                            "message",
-                            first_error
-                        )
-                    )
-                )
+            event_type, event = decode_event(event_lines)
+            event_lines = []
 
-            answer = "".join(
-                answer_parts
-            ).strip()
+            if event_type == "error":
+                raise RuntimeError("Dify returned a stream error")
 
-    except Exception as error:
-        if hasattr(error, "read"):
-            try:
-                error_body = error.read().decode(
-                    "utf-8",
-                    errors="replace"
-                )
+            if (
+                event_type in ("message", "agent_message")
+                and event is not None
+            ):
+                chunk = event.get("answer")
 
-                print(
-                    "DIFY HTTP ERROR BODY:",
-                    error_body[:5000]
-                )
-            except Exception as read_error:
-                print(
-                    "DIFY ERROR BODY READ FAILED:",
-                    repr(read_error)
-                )
+                if isinstance(chunk, str) and chunk:
+                    answer_received = True
+                    yield chunk
 
-        print(
-            "DIFY REQUEST ERROR:",
-            repr(error)
-        )
-        raise
+        if event_lines:
+            event_type, event = decode_event(event_lines)
 
-    if not answer:
-        raise RuntimeError(
-            "Dify returned an empty streaming response"
-        )
+            if event_type == "error":
+                raise RuntimeError("Dify returned a stream error")
 
-    return answer
+            if (
+                event_type in ("message", "agent_message")
+                and event is not None
+            ):
+                chunk = event.get("answer")
+
+                if isinstance(chunk, str) and chunk:
+                    answer_received = True
+                    yield chunk
+
+    if not answer_received:
+        raise RuntimeError("Dify returned an empty streaming response")
 
 
 @app.route("/api/ai/chat", methods=["POST"])
@@ -1579,16 +1557,7 @@ def ai_chat():
         }, 400
 
     try:
-        catalog_context, selected_products = build_catalog_context(
-            message
-        )
-
-        answer = call_dify_chat(
-            message=message,
-            history=history,
-            catalog_context=catalog_context
-        )
-
+        catalog_context, selected_products = build_catalog_context(message)
         unique_products = []
 
         for product in selected_products:
@@ -1598,21 +1567,57 @@ def ai_chat():
             ):
                 unique_products.append(product)
 
-        return {
-            "reply": answer,
-            "products": unique_products[:10]
-        }, 200
-
-    except Exception as error:
-        print(
-            "DIFY AI CHAT ERROR:",
-            repr(error)
-        )
+    except Exception:
+        print("DIFY AI CHAT SETUP FAILED")
 
         return {
             "message": "Sorry, I could not connect to Shopping World AI right now.",
-            "error": str(error)
         }, 500
+
+    def send_event(event_name, payload):
+        return (
+            f"event: {event_name}\n"
+            f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+        )
+
+    @stream_with_context
+    def generate_response():
+        yield send_event(
+            "products",
+            {"products": unique_products[:10]}
+        )
+
+        try:
+            for chunk in call_dify_chat(
+                message=message,
+                history=history,
+                catalog_context=catalog_context
+            ):
+                yield send_event("chunk", {"text": chunk})
+
+            yield send_event("done", {})
+        except GeneratorExit:
+            raise
+        except Exception:
+            print("DIFY AI CHAT STREAM FAILED")
+            yield send_event(
+                "error",
+                {
+                    "message": (
+                        "Sorry, I could not connect to Shopping World AI right now."
+                    )
+                }
+            )
+
+    response = Response(
+        generate_response(),
+        content_type="text/event-stream; charset=utf-8"
+    )
+    response.headers["Cache-Control"] = "no-cache, no-transform"
+    response.headers["X-Accel-Buffering"] = "no"
+    response.headers["Connection"] = "keep-alive"
+
+    return response
 
 
 if __name__ == "__main__":

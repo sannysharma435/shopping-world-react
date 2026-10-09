@@ -716,9 +716,8 @@
 }
 
 .ai-input-wrapper:focus-within {
-  border-color: rgba(116, 91, 255, 0.55);
+  border-color: rgba(86, 119, 180, 0.25);
   box-shadow:
-    0 0 0 3px rgba(116, 91, 255, 0.07),
     0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
@@ -1258,4 +1257,16 @@
   bottom: 25px !important;
 
   z-index: 1000000 !important;
+}
+.ai-input-wrapper textarea:focus,
+.ai-input-wrapper textarea:focus-visible,
+.shopping-ai-popup-input input:focus,
+.shopping-ai-popup-input input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.ai-input-wrapper textarea {
+  outline: none;
+  box-shadow: none;
 }

@@ -6,6 +6,56 @@ const AI_API_URL =
 
 const HISTORY_KEY = "shoppingWorldAIHistory";
 
+const parseSseEvent = (block) => {
+  let eventName = "message";
+  const dataLines = [];
+
+  block.split(/\r?\n/).forEach((line) => {
+    if (!line || line.startsWith(":")) {
+      return;
+    }
+
+    const separatorIndex = line.indexOf(":");
+    const field =
+      separatorIndex === -1
+        ? line
+        : line.slice(0, separatorIndex);
+    let value =
+      separatorIndex === -1
+        ? ""
+        : line.slice(separatorIndex + 1);
+
+    if (value.startsWith(" ")) {
+      value = value.slice(1);
+    }
+
+    if (field === "event") {
+      eventName = value;
+    } else if (field === "data") {
+      dataLines.push(value);
+    }
+  });
+
+  if (!dataLines.length) {
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(dataLines.join("\n"));
+
+    if (typeof data !== "object" || data === null) {
+      throw new Error("Invalid streaming response");
+    }
+
+    return {
+      event: eventName,
+      data
+    };
+  } catch {
+    throw new Error("Invalid streaming response");
+  }
+};
+
 function ShoppingAI({ fullPage = false }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -25,12 +75,29 @@ function ShoppingAI({ fullPage = false }) {
   });
 
   const messagesEndRef = useRef(null);
+  const requestIdRef = useRef(0);
+  const abortControllerRef = useRef(null);
+  const [waitingForFirstChunk, setWaitingForFirstChunk] =
+    useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth"
     });
   }, [messages, loading]);
+
+  useEffect(() => {
+    return () => {
+      requestIdRef.current += 1;
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const cancelActiveRequest = () => {
+    requestIdRef.current += 1;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+  };
 
   const saveHistory = (history) => {
     setChatHistory(history);
@@ -106,29 +173,36 @@ function ShoppingAI({ fullPage = false }) {
   };
 
   const startNewChat = () => {
+    cancelActiveRequest();
     setMessages([]);
     setProducts([]);
     setMessage("");
     setLoading(false);
+    setWaitingForFirstChunk(false);
     setActiveChatId(null);
     setActiveMenu("Chat");
   };
 
   const openChat = (chat) => {
+    cancelActiveRequest();
     setActiveChatId(chat.id);
     setMessages(chat.messages || []);
     setProducts([]);
     setMessage("");
     setLoading(false);
+    setWaitingForFirstChunk(false);
     setActiveMenu("Chat");
   };
 
   const clearHistory = () => {
+    cancelActiveRequest();
     setChatHistory([]);
     setMessages([]);
     setProducts([]);
     setMessage("");
     setActiveChatId(null);
+    setLoading(false);
+    setWaitingForFirstChunk(false);
 
     localStorage.removeItem(HISTORY_KEY);
   };
@@ -194,6 +268,14 @@ function ShoppingAI({ fullPage = false }) {
       ...messages,
       userMessage
     ];
+    const assistantIndex = updatedMessages.length;
+    const pendingMessages = [
+      ...updatedMessages,
+      {
+        role: "assistant",
+        content: ""
+      }
+    ];
 
     let chatId = activeChatId;
 
@@ -202,15 +284,23 @@ function ShoppingAI({ fullPage = false }) {
       setActiveChatId(chatId);
     }
 
-    setMessages(updatedMessages);
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setMessages(pendingMessages);
     setMessage("");
     setLoading(true);
+    setWaitingForFirstChunk(true);
     setProducts([]);
 
     updateCurrentChat(
       updatedMessages,
       chatId
     );
+
+    let assistantAnswer = "";
 
     try {
       const history = messages.map(
@@ -227,6 +317,7 @@ function ShoppingAI({ fullPage = false }) {
           headers: {
             "Content-Type": "application/json"
           },
+          signal: controller.signal,
           body: JSON.stringify({
             message: text,
             history
@@ -235,63 +326,135 @@ function ShoppingAI({ fullPage = false }) {
       );
 
       if (!response.ok) {
-        throw new Error(
-          `Request failed: ${response.status}`
-        );
+        throw new Error("AI request failed");
       }
 
-      const data =
-        await response.json();
+      if (
+        !response.headers
+          .get("Content-Type")
+          ?.toLowerCase()
+          .includes("text/event-stream") ||
+        !response.body
+      ) {
+        throw new Error("Invalid streaming response");
+      }
 
-      const reply =
-        data.reply ||
-        data.answer ||
-        data.message ||
-        "Sorry, I couldn't find an answer.";
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let receivedDone = false;
 
-      const finalMessages = [
-        ...updatedMessages,
-        {
-          role: "assistant",
-          content: reply
+      const handleEvent = (block) => {
+        if (requestIdRef.current !== requestId) {
+          return;
         }
-      ];
 
-      setMessages(finalMessages);
+        const parsedEvent = parseSseEvent(block);
 
-      updateCurrentChat(
-        finalMessages,
-        chatId
-      );
+        if (!parsedEvent) {
+          return;
+        }
 
-      if (Array.isArray(data.products)) {
-        setProducts(data.products);
-      }
-    } catch (error) {
-      console.error(
-        "Shopping AI Error:",
-        error
-      );
-
-      const errorMessage = {
-        role: "assistant",
-        content:
-          "Sorry, I am having trouble connecting right now. Please try again."
+        if (parsedEvent.event === "products") {
+          if (Array.isArray(parsedEvent.data.products)) {
+            setProducts(parsedEvent.data.products);
+          }
+        } else if (parsedEvent.event === "chunk") {
+          if (typeof parsedEvent.data.text === "string") {
+            assistantAnswer += parsedEvent.data.text;
+            setWaitingForFirstChunk(false);
+            setMessages((currentMessages) =>
+              currentMessages.map((item, index) =>
+                index === assistantIndex
+                  ? { ...item, content: assistantAnswer }
+                  : item
+              )
+            );
+          }
+        } else if (parsedEvent.event === "done") {
+          receivedDone = true;
+        } else if (parsedEvent.event === "error") {
+          throw new Error("AI stream failed");
+        }
       };
 
-      const finalMessages = [
-        ...updatedMessages,
-        errorMessage
-      ];
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          buffer += decoder.decode(value, { stream: !done });
+
+          let separatorMatch = buffer.match(/\r?\n\r?\n/);
+
+          while (separatorMatch) {
+            const block = buffer.slice(0, separatorMatch.index);
+            buffer = buffer.slice(
+              separatorMatch.index + separatorMatch[0].length
+            );
+
+            if (block.trim()) {
+              handleEvent(block);
+            }
+
+            separatorMatch = buffer.match(/\r?\n\r?\n/);
+          }
+
+          if (done) {
+            break;
+          }
+        }
+
+        if (buffer.trim()) {
+          handleEvent(buffer);
+        }
+      } finally {
+        reader.releaseLock();
+      }
+
+      if (!receivedDone || !assistantAnswer) {
+        throw new Error("AI stream ended unexpectedly");
+      }
+
+      if (requestIdRef.current !== requestId) {
+        return;
+      }
+
+      const finalMessages = pendingMessages.map(
+        (item, index) =>
+          index === assistantIndex
+            ? { ...item, content: assistantAnswer }
+            : item
+      );
 
       setMessages(finalMessages);
+      updateCurrentChat(finalMessages, chatId);
+    } catch (error) {
+      if (
+        requestIdRef.current === requestId &&
+        error.name !== "AbortError"
+      ) {
+        console.error("Shopping AI request failed.");
 
-      updateCurrentChat(
-        finalMessages,
-        chatId
-      );
+        const fallback =
+          "Sorry, I am having trouble connecting right now. Please try again.";
+        const finalAnswer = assistantAnswer
+          ? `${assistantAnswer}\n\n${fallback}`
+          : fallback;
+        const finalMessages = pendingMessages.map(
+          (item, index) =>
+            index === assistantIndex
+              ? { ...item, content: finalAnswer }
+              : item
+        );
+
+        setMessages(finalMessages);
+        updateCurrentChat(finalMessages, chatId);
+      }
     } finally {
-      setLoading(false);
+      if (requestIdRef.current === requestId) {
+        abortControllerRef.current = null;
+        setLoading(false);
+        setWaitingForFirstChunk(false);
+      }
     }
   };
 
@@ -608,7 +771,7 @@ function ShoppingAI({ fullPage = false }) {
                   )
                 )}
 
-                {loading && (
+                {loading && waitingForFirstChunk && (
                   <div className="ai-message-row assistant">
                     <div className="ai-message-avatar">
                       ✦
@@ -897,7 +1060,7 @@ function ShoppingAI({ fullPage = false }) {
               )
             )}
 
-            {loading && (
+            {loading && waitingForFirstChunk && (
               <div className="popup-typing">
                 AI is thinking...
               </div>
